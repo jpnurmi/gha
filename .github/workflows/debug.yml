@@ -17,62 +17,11 @@ jobs:
       - run: |
           dir env:
 
-      # - run: |
-      #     java -version
-      #     dumpbin /headers (Get-Command java).Source | Select-String "machine"
-      #   continue-on-error: true
-
-      # - run: |
-      #     python --version
-      #     dumpbin /headers (Get-Command python).Source | Select-String "machine"
-      #   continue-on-error: true
-
-      # - run: |
-      #     dotnet --version
-      #     dumpbin /headers (Get-Command dotnet).Source | Select-String "machine"
-      #   continue-on-error: true
-
-      # - run: |
-      #     ls ${env:ProgramFiles}
-      # - run: |
-      #     ls ${env:ProgramFiles(Arm)}
-      # - run: |
-      #     ls ${env:ProgramFiles(x86)}
-      # - run: |
-      #     ls ${env:RUNNER_TOOL_CACHE}
-
-      # - run: |
-      #     tree "${env:ProgramFiles}/Android" /F
-      # - run: |
-      #     tree "${env:ProgramFiles}/CMake" /F
-      # - run: |
-      #     tree "${env:ProgramFiles}/dotnet" /F
-      # - run: |
-      #     tree "${env:ProgramFiles}/OpenSSL" /F
-
-      # - run: |
-      #     tree ${env:ProgramFiles}
-      # - run: |
-      #     tree ${env:ProgramFiles(Arm)}
-      # - run: |
-      #     tree ${env:ProgramFiles(x86)}
-      # - run: |
-      #     tree ${env:RUNNER_TOOL_CACHE}
-
-      # - run: |
-      #     tree ${env:ProgramFiles} /F
-      # - run: |
-      #     tree ${env:ProgramFiles(Arm)} /F
-      # - run: |
-      #     tree ${env:ProgramFiles(x86)} /F
-      # - run: |
-      #     tree ${env:RUNNER_TOOL_CACHE} /F
-
       - uses: actions/checkout@v4
         with:
           repository: getsentry/sentry-native
-          recursive: 'submodules'
+          submodules: 'recursive'
 
-      - run: cmake -B build -D SENTRY_BACKEND=inproc
+      - run: cmake -B build -D CMAKE_BUILD_TYPE=RelWithDebInfo -D SENTRY_BACKEND=inproc
 
-      - run: cmake --build build
+      - run: cmake --build build --parallel
