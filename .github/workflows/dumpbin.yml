@@ -25,4 +25,7 @@ jobs:
           echo $dumpbinPath >> $env:GITHUB_PATH
 
       - run: |
-          dumpbin /headers (Get-Command cmake).Source
+          Get-Command dumpbin
+
+      - run: |
+          dumpbin /headers (Get-Command dumpbin).Source
