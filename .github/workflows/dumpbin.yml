@@ -19,6 +19,8 @@ jobs:
 
       - run: |
           choco install visualstudio2022buildtools --package-parameters "--includeRecommended --includeOptional --add Microsoft.VisualStudio.Component.VC.Tools.ARM64" --no-progress
+          tree "C:\Program Files\Microsoft Visual Studio\2022"
+          tree "C:\Program Files (x86)\Microsoft Visual Studio\2022"
           tree "C:\Program Files (Arm)\Microsoft Visual Studio\2022"
 
           #$vsPath = "C:\Program Files (Arm)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC"
