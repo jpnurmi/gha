@@ -2,7 +2,9 @@ name: Dumpbin
 
 on:
   push:
-    paths: '**/dumpbin.yml'
+    paths:
+      - '**/dumpbin.yml'
+      - '**/dumpbin/action.yml'
   workflow_dispatch:
 
 defaults:
@@ -21,7 +23,7 @@ jobs:
       - run: |
           dir env:
 
-      - uses: .github/actions/dumpbin
+      - uses: ./.github/actions/dumpbin
 
       - run: |
           Get-Command dumpbin
