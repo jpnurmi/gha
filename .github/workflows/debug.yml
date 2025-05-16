@@ -20,13 +20,16 @@ jobs:
           dir env:
 
       - run: |
-          java --version
+          java -version
+        continue-on-error: true
 
       - run: |
           python --version
+        continue-on-error: true
 
       - run: |
           dotnet --version
+        continue-on-error: true
 
       - run: |
           ls ${env:ProgramFiles}
