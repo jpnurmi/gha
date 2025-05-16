@@ -14,34 +14,32 @@ jobs:
     runs-on: windows-11-arm
 
     steps:
-      - uses: actions/checkout@v4
-
       - run: |
           dir env:
 
-      - run: |
-          java -version
-          dumpbin /headers (Get-Command java).Source | Select-String "machine"
-        continue-on-error: true
+      # - run: |
+      #     java -version
+      #     dumpbin /headers (Get-Command java).Source | Select-String "machine"
+      #   continue-on-error: true
 
-      - run: |
-          python --version
-          dumpbin /headers (Get-Command python).Source | Select-String "machine"
-        continue-on-error: true
+      # - run: |
+      #     python --version
+      #     dumpbin /headers (Get-Command python).Source | Select-String "machine"
+      #   continue-on-error: true
 
-      - run: |
-          dotnet --version
-          dumpbin /headers (Get-Command dotnet).Source | Select-String "machine"
-        continue-on-error: true
+      # - run: |
+      #     dotnet --version
+      #     dumpbin /headers (Get-Command dotnet).Source | Select-String "machine"
+      #   continue-on-error: true
 
-      - run: |
-          ls ${env:ProgramFiles}
-      - run: |
-          ls ${env:ProgramFiles(Arm)}
-      - run: |
-          ls ${env:ProgramFiles(x86)}
-      - run: |
-          ls ${env:RUNNER_TOOL_CACHE}
+      # - run: |
+      #     ls ${env:ProgramFiles}
+      # - run: |
+      #     ls ${env:ProgramFiles(Arm)}
+      # - run: |
+      #     ls ${env:ProgramFiles(x86)}
+      # - run: |
+      #     ls ${env:RUNNER_TOOL_CACHE}
 
       # - run: |
       #     tree "${env:ProgramFiles}/Android" /F
@@ -69,3 +67,12 @@ jobs:
       #     tree ${env:ProgramFiles(x86)} /F
       # - run: |
       #     tree ${env:RUNNER_TOOL_CACHE} /F
+
+      - uses: actions/checkout@v4
+        with:
+          repository: getsentry/sentry-native
+          recursive: 'submodules'
+
+      - run: cmake -B build -D SENTRY_BACKEND=inproc
+
+      - run: cmake --build build
