@@ -24,7 +24,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-          cache: "pip"
+          # Error: Cache folder path is retrieved for pip but doesn't exist on disk: c:\users\runneradmin\appdata\local\pip\cache.
+          # This likely indicates that there are no dependencies to cache. Consider removing the cache step if it is not needed.
+          # cache: "pip"
 
       - run: Get-Command python3
       - run: dumpbin /headers (Get-Command python3).Source
