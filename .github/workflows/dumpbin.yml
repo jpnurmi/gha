@@ -1,0 +1,27 @@
+name: Dumpbin
+
+on:
+  push:
+    paths: '**/dumpbin.yml'
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  build-tools:
+    runs-on: windows-11-arm
+
+    steps:
+      - run: |
+          dir env:
+
+      - run: |
+          choco install visualstudio2022buildtools --package-parameters "--includeRecommended --includeOptional --add Microsoft.VisualStudio.Component.VC.Tools.ARM64" --no-progress
+          tree "C:\Program Files (Arm)\Microsoft Visual Studio\2022"
+
+          #$vsPath = "C:\Program Files (Arm)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC"
+          #$latestVersion = (Get-ChildItem -Path $vsPath | Sort-Object Name -Descending | Select-Object -First 1).Name
+          #$dumpbinPath = "$vsPath\$latestVersion\bin\Hostx64\x64"
+          #echo $dumpbinPath >> $env:GITHUB_PATH
