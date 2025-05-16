@@ -28,6 +28,7 @@ jobs:
           key: visualstudio2022buildtools-${{ runner.os }}-${{ runner.arch }}
 
       - name: Install visualstudio2022buildtools
+        if: steps.cache-visualstudio2022buildtools.outputs.cache-hit != 'true'
         run: |
           switch ("${{ runner.arch }}") {
             "ARM64" { $component = "Microsoft.VisualStudio.Component.VC.Tools.ARM64" }
