@@ -18,7 +18,7 @@ jobs:
           dir env:
 
       - run: |
-          choco install visualstudio2022buildtools --package-parameters "--includeRecommended --includeOptional --add Microsoft.VisualStudio.Component.VC.Tools.ARM64"
+          choco install visualstudio2022buildtools --package-parameters "--add Microsoft.VisualStudio.Component.VC.Tools.ARM64"
           $vsPath = "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC"
           $latestVersion = (Get-ChildItem -Path $vsPath | Sort-Object Name -Descending | Select-Object -First 1).Name
           $dumpbinPath = "$vsPath\$latestVersion\bin\Hostarm64\arm64"
