@@ -1,0 +1,27 @@
+name: Android
+
+on:
+  push:
+    paths: '**/android.yml'
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  build-tools:
+    runs-on: windows-11-arm
+
+    steps:
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - uses: android-actions/setup-android@07976c6290703d34c16d382cb36445f98bb43b1f # v3.2.0
+        with:
+          log-accepted-android-sdk-licenses: false
+
+      - run: |
+          sdkmanager "build-tools:34.0.0"
