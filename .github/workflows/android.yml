@@ -23,5 +23,5 @@ jobs:
         with:
           log-accepted-android-sdk-licenses: false
 
-      - run: |
-          sdkmanager "build-tools:34.0.0"
+      - run: sdkmanager --list
+      - run: sdkmanager "build-tools;34.0.0"
