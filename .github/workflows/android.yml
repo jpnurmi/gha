@@ -26,7 +26,8 @@ jobs:
 
       - run: sdkmanager --list
       - run: sdkmanager "build-tools;34.0.0"
-      - run: Get-Command aapk
+      - run: tree ${env:ANDROID_SDK_ROOT}
+      # - run: Get-Command aapk
 
       # - uses: lorenalexm/install-dumpbin-action@main
 
