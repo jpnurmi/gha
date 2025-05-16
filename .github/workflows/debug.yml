@@ -20,6 +20,15 @@ jobs:
           dir env:
 
       - run: |
+          java --version
+
+      - run: |
+          python --version
+
+      - run: |
+          dotnet --version
+
+      - run: |
           ls ${env:ProgramFiles}
       - run: |
           ls ${env:ProgramFiles(Arm)}
@@ -28,14 +37,14 @@ jobs:
       - run: |
           ls ${env:RUNNER_TOOL_CACHE}
 
-      - run: |
-          tree "${env:ProgramFiles}/Android" /F
-      - run: |
-          tree "${env:ProgramFiles}/CMake" /F
-      - run: |
-          tree "${env:ProgramFiles}/dotnet" /F
-      - run: |
-          tree "${env:ProgramFiles}/OpenSSL" /F
+      # - run: |
+      #     tree "${env:ProgramFiles}/Android" /F
+      # - run: |
+      #     tree "${env:ProgramFiles}/CMake" /F
+      # - run: |
+      #     tree "${env:ProgramFiles}/dotnet" /F
+      # - run: |
+      #     tree "${env:ProgramFiles}/OpenSSL" /F
 
       # - run: |
       #     tree ${env:ProgramFiles}
