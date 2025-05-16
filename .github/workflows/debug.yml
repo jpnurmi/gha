@@ -15,13 +15,24 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
       - run: |
           dir env:
+
       - run: |
-          tree "$env:ProgramFiles"
+          tree ${env:ProgramFiles}
       - run: |
-          tree "$env:ProgramFiles(Arm)"
+          tree ${env:ProgramFiles(Arm)}
       - run: |
-          tree "$env:ProgramFiles(X86)"
+          tree ${env:ProgramFiles(x86)}
       - run: |
-          tree "$env:RUNNER_TOOL_CACHE"
+          tree ${env:RUNNER_TOOL_CACHE}
+
+      - run: |
+          tree ${env:ProgramFiles} /F
+      - run: |
+          tree ${env:ProgramFiles(Arm)} /F
+      - run: |
+          tree ${env:ProgramFiles(x86)} /F
+      - run: |
+          tree ${env:RUNNER_TOOL_CACHE} /F
