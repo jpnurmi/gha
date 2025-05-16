@@ -12,6 +12,7 @@ runs:
 
     - name: Install VS2022 build tools
       if: steps.cache-visualstudio2022buildtools.outputs.cache-hit != 'true'
+      shell: pwsh
       run: |
         switch ("${{ runner.arch }}") {
           "ARM64" { $component = "Microsoft.VisualStudio.Component.VC.Tools.ARM64" }
@@ -22,6 +23,7 @@ runs:
       continue-on-error: true
 
     - name: Add dumpbin to PATH
+      shell: pwsh
       run: |
         switch ("${{ runner.arch }}") {
           "ARM64" { $subdir = "Hostarm64\arm64" }
