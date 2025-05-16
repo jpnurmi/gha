@@ -18,10 +18,10 @@ jobs:
       - run: |
           dir env:
       - run: |
-          tree "$env:ProgramFiles" /F
+          tree "$env:ProgramFiles"
       - run: |
-          tree "$env:ProgramFiles(Arm)" /F
+          tree "$env:ProgramFiles(Arm)"
       - run: |
-          tree "$env:ProgramFiles(X86)" /F
+          tree "$env:ProgramFiles(X86)"
       - run: |
-          tree "$env:RUNNER_TOOL_CACHE" /F
+          tree "$env:RUNNER_TOOL_CACHE"
