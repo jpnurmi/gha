@@ -1,0 +1,19 @@
+name: Debug
+
+on:
+  push:
+    paths: '**/debug.yml'
+workflow_dispatch:
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  env:
+    runs-on: windows-11-arm
+
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          dir env:
