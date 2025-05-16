@@ -23,6 +23,7 @@ jobs:
       - run: |
           dir env:
 
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/dumpbin
 
       - run: |
