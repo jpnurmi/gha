@@ -17,3 +17,11 @@ jobs:
       - uses: actions/checkout@v4
       - run: |
           dir env:
+      - run: |
+          tree "$env:ProgramFiles" /F
+      - run: |
+          tree "$env:ProgramFiles(Arm)" /F
+      - run: |
+          tree "$env:ProgramFiles(X86)" /F
+      - run: |
+          tree "$env:RUNNER_TOOL_CACHE" /F
