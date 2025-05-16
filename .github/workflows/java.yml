@@ -10,7 +10,7 @@ defaults:
     shell: pwsh
 
 jobs:
-  build-tools:
+  setup-java:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -25,5 +25,7 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '21'
+
       - run: Get-Command java
       - run: dumpbin /headers (Get-Command java).source
+      - run: java -version

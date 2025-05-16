@@ -1,10 +1,8 @@
-name: Dumpbin
+name: Python
 
 on:
   push:
-    paths:
-      - '**/dumpbin.yml'
-      - '**/dumpbin/action.yml'
+    paths: '**/python.yml'
   workflow_dispatch:
 
 defaults:
@@ -12,7 +10,7 @@ defaults:
     shell: pwsh
 
 jobs:
-  install-dumpbin:
+  setup-python:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -23,5 +21,11 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/dumpbin
 
-      - run: Get-Command dumpbin
-      - run: dumpbin /headers (Get-Command dumpbin).Source
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - run: Get-Command python3
+      - run: dumpbin /headers (Get-Command python3).Source
+      - run: python3 --version
