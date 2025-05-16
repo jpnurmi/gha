@@ -20,9 +20,6 @@ jobs:
         os: [windows-latest, windows-11-arm]
 
     steps:
-      - run: |
-          dir env:
-
       - uses: actions/checkout@v4
       - uses: ./.github/actions/dumpbin
 

@@ -1,8 +1,8 @@
-name: Android
+name: Java
 
 on:
   push:
-    paths: '**/android.yml'
+    paths: '**/java.yml'
   workflow_dispatch:
 
 defaults:
@@ -25,11 +25,5 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '21'
-
-      - uses: android-actions/setup-android@07976c6290703d34c16d382cb36445f98bb43b1f # v3.2.0
-        with:
-          log-accepted-android-sdk-licenses: false
-
-      - run: sdkmanager "build-tools;34.0.0"
-      #- run: tree ${env:ANDROID_SDK_ROOT}/build-tools/34.0.0 /F
-      - run: dumpbin /headers ${env:ANDROID_SDK_ROOT}/build-tools/34.0.0/aapt.exe
+      - run: Get-Command java
+      - run: dumpbin /headers (Get-Command java).source
