@@ -20,6 +20,15 @@ jobs:
           dir env:
 
       - run: |
+          ls ${env:ProgramFiles}
+      - run: |
+          ls ${env:ProgramFiles(Arm)}
+      - run: |
+          ls ${env:ProgramFiles(x86)}
+      - run: |
+          ls ${env:RUNNER_TOOL_CACHE}
+
+      - run: |
           tree ${env:ProgramFiles}
       - run: |
           tree ${env:ProgramFiles(Arm)}
