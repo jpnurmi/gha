@@ -17,8 +17,16 @@ jobs:
       - run: |
           dir env:
 
+      - uses: actions/cache@v4
+        id: cache-visualstudio2022buildtools
+        with:
+          path: "C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/VC/Tools/MSVC"
+          key: visualstudio2022buildtools-${{ runner.os }}-${{ runner.arch }}
+
+      - run: choco install visualstudio2022buildtools --package-parameters "--add Microsoft.VisualStudio.Component.VC.Tools.ARM64"
+        if: steps.cache-visualstudio2022buildtools.outputs.cache-hit != 'true'
+
       - run: |
-          choco install visualstudio2022buildtools --package-parameters "--add Microsoft.VisualStudio.Component.VC.Tools.ARM64"
           $vsPath = "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC"
           tree "$vsPath" /F
           $latestVersion = (Get-ChildItem -Path $vsPath | Sort-Object Name -Descending | Select-Object -First 1).Name
