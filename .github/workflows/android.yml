@@ -25,3 +25,8 @@ jobs:
 
       - run: sdkmanager --list
       - run: sdkmanager "build-tools;34.0.0"
+
+      - uses: lorenalexm/install-dumpbin-action@main
+
+      - run: Get-Command java
+      - run: Get-Command aapk
