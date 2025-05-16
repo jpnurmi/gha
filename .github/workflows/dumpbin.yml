@@ -21,35 +21,7 @@ jobs:
       - run: |
           dir env:
 
-      - uses: actions/cache@v4
-        id: cache-visualstudio2022buildtools
-        with:
-          path: "C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/VC/Tools/MSVC"
-          key: visualstudio2022buildtools-${{ runner.os }}-${{ runner.arch }}
-
-      - name: Install visualstudio2022buildtools
-        if: steps.cache-visualstudio2022buildtools.outputs.cache-hit != 'true'
-        run: |
-          switch ("${{ runner.arch }}") {
-            "ARM64" { $component = "Microsoft.VisualStudio.Component.VC.Tools.ARM64" }
-            "X64"   { $component = "Microsoft.VisualStudio.Component.VC.Tools.x86.x64" }
-            default { throw "Unsupported architecture: ${{ runner.arch }}" }
-          }
-          choco install visualstudio2022buildtools --package-parameters "--add Microsoft.VisualStudio.Component.VC.Tools.ARM64"
-        continue-on-error: true
-
-      - name: Add dumpbin to PATH
-        run: |
-          switch ("${{ runner.arch }}") {
-            "ARM64" { $subdir = "Hostarm64\arm64" }
-            "X64"   { $subdir = "Hostx64\x64" }
-            default { throw "Unsupported architecture: ${{ runner.arch }}" }
-          }
-          $vsPath = "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC"
-          tree "$vsPath" /F
-          $latestVersion = (Get-ChildItem -Path $vsPath | Sort-Object Name -Descending | Select-Object -First 1).Name
-          $dumpbinPath = "$vsPath\$latestVersion\bin\$subdir"
-          echo $dumpbinPath >> $env:GITHUB_PATH
+      - uses: .github/actions/dumpbin
 
       - run: |
           Get-Command dumpbin
