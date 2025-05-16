@@ -1,0 +1,31 @@
+name: Dotnet
+
+on:
+  push:
+    paths: '**/dotnet.yml'
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  build-tools:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, windows-11-arm]
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/dumpbin
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            9.0.203
+
+      - run: Get-Command dotnet
+      - run: dumpbin /headers (Get-Command dotnet).source
