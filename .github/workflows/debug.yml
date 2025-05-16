@@ -21,14 +21,17 @@ jobs:
 
       - run: |
           java -version
+          dumpbin /headers (Get-Command java).Source | Select-String "machine"
         continue-on-error: true
 
       - run: |
           python --version
+          dumpbin /headers (Get-Command python).Source | Select-String "machine"
         continue-on-error: true
 
       - run: |
           dotnet --version
+          dumpbin /headers (Get-Command dotnet).Source | Select-String "machine"
         continue-on-error: true
 
       - run: |
