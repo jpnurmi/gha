@@ -3,7 +3,7 @@ name: Debug
 on:
   push:
     paths: '**/debug.yml'
-workflow_dispatch:
+  workflow_dispatch:
 
 defaults:
   run:
