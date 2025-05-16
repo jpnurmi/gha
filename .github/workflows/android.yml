@@ -14,11 +14,15 @@ jobs:
     runs-on: windows-11-arm
 
     steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/dumpbin
+
       - uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '21'
       - run: Get-Command java
+      - run: dumpbin /headers (Get-Command java).source
 
       - uses: android-actions/setup-android@07976c6290703d34c16d382cb36445f98bb43b1f # v3.2.0
         with:
@@ -26,21 +30,5 @@ jobs:
 
       - run: sdkmanager --list
       - run: sdkmanager "build-tools;34.0.0"
-      - run: tree ${env:ANDROID_SDK_ROOT}/build-tools/34.0.0 /F
-      # - run: Get-Command aapk
-
-      # - uses: lorenalexm/install-dumpbin-action@main
-
-      - run: |
-          #Set-ExecutionPolicy Bypass -Scope Process -Force;
-          #[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072;
-          #iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-
-          choco install visualstudio2022buildtools --package-parameters "--includeRecommended --includeOptional --add Microsoft.VisualStudio.Component.VC.Tools.ARM64" --no-progress
-
-          # Set up PATH for Visual Studio
-          tree "C:\Program Files (Arm)\Microsoft Visual Studio\2022"
-          $vsPath = "C:\Program Files (Arm)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC"
-          $latestVersion = (Get-ChildItem -Path $vsPath | Sort-Object Name -Descending | Select-Object -First 1).Name
-          $dumpbinPath = "$vsPath\$latestVersion\bin\Hostx64\x64"
-          echo $dumpbinPath >> $env:GITHUB_PATH
+      #- run: tree ${env:ANDROID_SDK_ROOT}/build-tools/34.0.0 /F
+      - run: dumpbin /headers ${env:ANDROID_SDK_ROOT}/build-tools/34.0.0/aapt.exe
