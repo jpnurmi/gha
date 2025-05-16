@@ -10,7 +10,7 @@ defaults:
     shell: pwsh
 
 jobs:
-  build-tools:
+  setup-android:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
