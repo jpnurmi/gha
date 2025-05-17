@@ -27,7 +27,7 @@ jobs:
       - run: cmake -B build -D CMAKE_BUILD_TYPE=RelWithDebInfo -D SENTRY_BACKEND=inproc -D SENTRY_BUILD_SHARED_LIBS=0
         working-directory: sentry-native
 
-      - run: cmake --build build --parallel --target sentry
+      - run: cmake --build build --parallel --target sentry --config RelWithDebInfo
         working-directory: sentry-native
 
       - run: tree sentry-native/build /F
