@@ -2,7 +2,8 @@ name: sentry-dotnet
 
 on:
   push:
-    paths: '**/build.yml'
+    paths:
+      - '**/sentry-dotnet.yml'
   workflow_dispatch:
 
 defaults:
@@ -21,7 +22,7 @@ jobs:
         with:
           repository: getsentry/sentry-dotnet
           submodules: 'recursive'
-        path: sentry-dotnet
+          path: sentry-dotnet
 
       - uses: actions/setup-java@v3
         with:

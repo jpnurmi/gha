@@ -2,7 +2,8 @@ name: Python
 
 on:
   push:
-    paths: '**/python.yml'
+    paths:
+      - '**/python.yml'
   workflow_dispatch:
 
 defaults:

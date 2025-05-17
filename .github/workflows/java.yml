@@ -2,7 +2,8 @@ name: Java
 
 on:
   push:
-    paths: '**/java.yml'
+    paths:
+      - '**/java.yml'
   workflow_dispatch:
 
 defaults:

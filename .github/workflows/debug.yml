@@ -2,7 +2,8 @@ name: Debug
 
 on:
   push:
-    paths: '**/debug.yml'
+    paths:
+      - '**/debug.yml'
   workflow_dispatch:
 
 defaults:

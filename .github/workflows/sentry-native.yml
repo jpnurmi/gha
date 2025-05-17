@@ -2,7 +2,8 @@ name: sentry-native
 
 on:
   push:
-    paths: '**/build.yml'
+    paths:
+      - '**/sentry-native.yml'
   workflow_dispatch:
 
 defaults:

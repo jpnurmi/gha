@@ -2,7 +2,8 @@ name: Dotnet
 
 on:
   push:
-    paths: '**/dotnet.yml'
+    paths:
+      - '**/dotnet.yml'
   workflow_dispatch:
 
 defaults:
