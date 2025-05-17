@@ -1,9 +1,9 @@
-name: Dotnet
+name: Setup Java
 
 on:
   push:
     paths:
-      - '**/dotnet.yml'
+      - '**/setup-java.yml'
   workflow_dispatch:
 
 defaults:
@@ -11,7 +11,7 @@ defaults:
     shell: pwsh
 
 jobs:
-  setup-dotnet:
+  setup-java:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -22,12 +22,11 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/dumpbin
 
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/setup-java@v3
         with:
-          dotnet-version: |
-            8.0.x
-            9.0.203
+          distribution: 'temurin'
+          java-version: '21'
 
-      - run: Get-Command dotnet
-      - run: dumpbin /headers (Get-Command dotnet).source
-      - run: dotnet --version
+      - run: Get-Command java
+      - run: dumpbin /headers (Get-Command java).source
+      - run: java -version

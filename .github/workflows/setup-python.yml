@@ -1,9 +1,9 @@
-name: Python
+name: Setup Python
 
 on:
   push:
     paths:
-      - '**/python.yml'
+      - '**/setup-python.yml'
   workflow_dispatch:
 
 defaults:

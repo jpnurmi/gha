@@ -1,9 +1,9 @@
-name: Android
+name: Setup Android
 
 on:
   push:
     paths:
-      - '**/android.yml'
+      - '**/setup-android.yml'
   workflow_dispatch:
 
 defaults:
