@@ -1,0 +1,35 @@
+name: sentry-native
+
+on:
+  push:
+    paths: '**/build.yml'
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  build:
+    runs-on: windows-11-arm
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/dumpbin
+
+      - uses: actions/checkout@v4
+        with:
+          repository: getsentry/sentry-native
+          submodules: 'recursive'
+          path: sentry-native
+
+      - run: cmake -B build -D CMAKE_BUILD_TYPE=RelWithDebInfo -D SENTRY_BACKEND=inproc -D SENTRY_BUILD_SHARED_LIBS=0
+        working-directory: sentry-native
+
+      - run: cmake --build build --parallel --target sentry
+        working-directory: sentry-native
+
+      - run: tree sentry-native/build /F
+
+      - run: dumpbin build/RelWithDebInfo/sentry.lib
+        working-directory: sentry-native

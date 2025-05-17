@@ -1,4 +1,4 @@
-name: Build
+name: sentry-dotnet
 
 on:
   push:
@@ -10,26 +10,18 @@ defaults:
     shell: pwsh
 
 jobs:
-  sentry-native:
+  build:
     runs-on: windows-11-arm
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          repository: getsentry/sentry-native
-          submodules: 'recursive'
+      - uses: ./.github/actions/dumpbin
 
-      - run: cmake -B build -D CMAKE_BUILD_TYPE=RelWithDebInfo -D SENTRY_BACKEND=inproc -D SENTRY_BUILD_SHARED_LIBS=0
-      - run: cmake --build build --parallel --target sentry
-
-  sentry-dotnet:
-    runs-on: windows-11-arm
-
-    steps:
       - uses: actions/checkout@v4
         with:
           repository: getsentry/sentry-dotnet
           submodules: 'recursive'
+        path: sentry-dotnet
 
       - uses: actions/setup-java@v3
         with:
@@ -52,3 +44,7 @@ jobs:
             9.0.203
 
       - run: ./scripts/build-sentry-native.ps1
+        working-directory: sentry-dotnet
+
+      - run: dumpbin modules/sentry-native/build/RelWithDebInfo/sentry.lib
+        working-directory: sentry-dotnet
