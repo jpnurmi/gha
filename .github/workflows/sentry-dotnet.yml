@@ -47,5 +47,11 @@ jobs:
       - run: ./scripts/build-sentry-native.ps1
         working-directory: sentry-dotnet
 
-      - run: dumpbin modules/sentry-native/build/RelWithDebInfo/sentry.lib
+      - run: dumpbin /headers modules/sentry-native/build/RelWithDebInfo/sentry.lib
+        working-directory: sentry-dotnet
+
+      - run: dotnet workload restore
+        working-directory: sentry-dotnet
+
+      - run: dotnet build Sentry-CI-Build-Windows.slnf
         working-directory: sentry-dotnet
