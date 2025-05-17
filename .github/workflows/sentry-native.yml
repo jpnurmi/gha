@@ -32,8 +32,8 @@ jobs:
 
       - run: tree sentry-native/build /F
 
-      - run: dumpbin build/RelWithDebInfo/sentry.lib
+      - run: dumpbin /headers build/RelWithDebInfo/sentry.lib
         working-directory: sentry-native
 
-      - run: dumpbin build/RelWithDebInfo/sentry_example.exe
+      - run: dumpbin /headers build/RelWithDebInfo/sentry_example.exe
         working-directory: sentry-native
