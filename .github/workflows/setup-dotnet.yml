@@ -32,4 +32,5 @@ jobs:
       - run: dumpbin /headers (Get-Command dotnet).source
       - run: dotnet --version
 
-      - run: dir env:
+      - run: |
+          dir env:
