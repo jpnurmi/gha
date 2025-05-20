@@ -1,0 +1,14 @@
+name: Install java
+description: Installs java
+runs:
+  using: composite
+
+  env:
+    JAVA_VERSION: '17'
+    JAVA_DISTRIBUTION: ${{ runner.os == 'Windows' && runner.arch == 'ARM64' && 'microsoft' || 'temurin '}}
+
+  steps:
+    - uses: actions/setup-java@v3
+      with:
+        distribution: ${{ env.JAVA_DISTRIBUTION }}
+        java-version: ${{ env.JAVA_VERSION }}
