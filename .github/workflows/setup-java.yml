@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - '**/setup-java.yml'
+      - '**/java/action.yml'
   workflow_dispatch:
 
 defaults:
