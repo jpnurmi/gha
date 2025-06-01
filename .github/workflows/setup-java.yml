@@ -28,7 +28,7 @@ jobs:
       - uses: ./.github/actions/dumpbin
         if: ${{ runner.os == 'Windows' }}
 
-      - run: apk update && apk add file tree
+      - run: apk update && apk add bash file tree
         if: ${{ contains(matrix.os.container, 'alpine') }}
 
       - uses: actions/setup-java@v3
