@@ -8,6 +8,8 @@ on:
 
 jobs:
   setup-java:
+    name: setup-java ${{ matrix.java-version }} (${{ matrix.os.container || matrix.os.host }}, ${{ matrix.java-distribution }})
+
     runs-on: ${{ matrix.os.host }}
     container: ${{ matrix.os.container }}
     strategy:
