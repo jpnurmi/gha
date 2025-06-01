@@ -6,10 +6,6 @@ on:
       - '**/setup-dotnet.yml'
   workflow_dispatch:
 
-defaults:
-  run:
-    shell: pwsh
-
 jobs:
   setup-dotnet:
     runs-on: ${{ matrix.os }}

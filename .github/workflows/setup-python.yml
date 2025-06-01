@@ -6,21 +6,26 @@ on:
       - '**/setup-python.yml'
   workflow_dispatch:
 
-defaults:
-  run:
-    shell: pwsh
-
 jobs:
   setup-python:
     runs-on: ${{ matrix.os }}
+    container: ${{ matrix.container }}
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, windows-11-arm]
+        include:
+          - os: ubuntu-latest
+          - os: ubuntu-latest
+            container: ghcr.io/jpnurmi/alpine:3.21
+          - os: ubuntu-24.04-arm
+          - os: windows-latest
+          - os: windows-11-arm
 
     steps:
       - uses: actions/checkout@v4
+
       - uses: ./.github/actions/dumpbin
+        if: ${{ runner.os == 'Windows' }}
 
       - uses: actions/setup-python@v5
         with:
@@ -29,6 +34,16 @@ jobs:
           # This likely indicates that there are no dependencies to cache. Consider removing the cache step if it is not needed.
           # cache: "pip"
 
-      - run: Get-Command python3
-      - run: dumpbin /headers (Get-Command python3).Source
+      - run: |
+          Get-Command python3
+          dumpbin /headers (Get-Command python3).Source
+        shell: pwsh
+        if: ${{ runner.os == 'Windows' }}
+
+      - run: |
+          which python3
+          file $(which python3)
+        shell: bash
+        if: ${{ runner.os == 'Linux' }}
+
       - run: python3 --version
