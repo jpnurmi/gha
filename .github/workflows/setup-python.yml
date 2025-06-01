@@ -42,7 +42,7 @@ jobs:
 
       - run: |
           which python3
-          file $(which python3)
+          file $(realpath $(which python3))
         shell: bash
         if: ${{ runner.os == 'Linux' }}
 
