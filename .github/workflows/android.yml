@@ -40,8 +40,8 @@ jobs:
       - run: sdkmanager "build-tools;34.0.0"
 
       - run: |
-          dumpbin /headers ${env:ANDROID_SDK_ROOT}/build-tools/34.0.0/aapt.exe
-          ${env:ANDROID_SDK_ROOT}/build-tools/34.0.0/aapt.exe version
+          dumpbin /headers (Join-Path $env:ANDROID_SDK_ROOT 'build-tools/34.0.0/aapt.exe')
+          & (Join-Path $env:ANDROID_SDK_ROOT 'build-tools/34.0.0/aapt.exe') version
         if: ${{ runner.os == 'Windows' }}
 
       - run: |
