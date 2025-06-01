@@ -8,6 +8,7 @@ on:
 
 jobs:
   setup-dotnet:
+    name: setup-dotnet (${{ matrix.container || matrix.os }})
     runs-on: ${{ matrix.os }}
     container: ${{ matrix.container }}
     strategy:
@@ -45,3 +46,4 @@ jobs:
         if: ${{ runner.os == 'Linux' }}
 
       - run: dotnet --version
+      - run: dotnet --list-sdks
