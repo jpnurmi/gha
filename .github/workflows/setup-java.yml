@@ -18,6 +18,7 @@ jobs:
         java-distribution: ['temurin', 'microsoft']
         include:
           - os: ubuntu-latest
+          - os: ubuntu-latest
             container: alpine:3.21
 
     steps:
@@ -41,8 +42,8 @@ jobs:
         if: ${{ runner.os == 'Windows' }}
 
       - run: |
-          which java
-          file $(which java)
+          file $JAVA_HOME/bin/java
+          echo "$JAVA_HOME/bin" >> $GITHUB_PATH
         shell: bash
         if: ${{ runner.os == 'Linux' }}
 
