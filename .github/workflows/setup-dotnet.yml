@@ -13,14 +13,23 @@ defaults:
 jobs:
   setup-dotnet:
     runs-on: ${{ matrix.os }}
+    container: ${{ matrix.container }}
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, windows-11-arm]
+        include:
+          - os: ubuntu-latest
+          - os: ubuntu-latest
+            container: ghcr.io/jpnurmi/alpine:3.21
+          - os: ubuntu-24.04-arm
+          - os: windows-latest
+          - os: windows-11-arm
 
     steps:
       - uses: actions/checkout@v4
+
       - uses: ./.github/actions/dumpbin
+        if: ${{ runner.os == 'Windows' }}
 
       - uses: actions/setup-dotnet@v4
         with:
@@ -28,9 +37,15 @@ jobs:
             8.0.x
             9.0.203
 
-      - run: Get-Command dotnet
-      - run: dumpbin /headers (Get-Command dotnet).source
-      - run: dotnet --version
+      - run: |
+          Get-Command dotnet
+          dumpbin /headers (Get-Command dotnet).source
+        shell: pwsh
+        if: ${{ runner.os == 'Windows' }}
 
       - run: |
-          dir env:
+          file /usr/share/dotnet/dotnet
+        shell: bash
+        if: ${{ runner.os == 'Linux' }}
+
+      - run: dotnet --version
