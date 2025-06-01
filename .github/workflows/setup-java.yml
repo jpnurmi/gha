@@ -4,7 +4,6 @@ on:
   push:
     paths:
       - '**/setup-java.yml'
-      - '**/java/action.yml'
   workflow_dispatch:
 
 defaults:
@@ -18,17 +17,16 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows-latest, windows-11-arm]
+        java-version: [17, 21]
 
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/dumpbin
 
-      # - uses: actions/setup-java@v3
-      #   with:
-      #     distribution: 'temurin'
-      #     java-version: '21'
-
-      - uses: ./.github/actions/java
+      - uses: actions/setup-java@v3
+        with:
+          distribution: ${{ runner.os == 'Windows' && runner.arch == 'ARM64' && 'microsoft' || 'temurin '}}
+          java-version: ${{ matrix.java-version }}
 
       - run: Get-Command java
       - run: dumpbin /headers (Get-Command java).source
