@@ -6,8 +6,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  setup-pester:
-    name: setup-pester (${{ matrix.container || matrix.os }})
+  pester:
+    name: pester (${{ matrix.container || matrix.os }})
     runs-on: ${{ matrix.os }}
     container: ${{ matrix.container }}
     strategy:
