@@ -4,6 +4,7 @@ FROM ${BASE}
 
 RUN apk update
 RUN apk add bash build-base clang cmake curl file git icu lsb-release-minimal powershell sudo tar tree wget
+RUN pwsh -Command Install-Module Pester -Scope AllUsers -Force
 
 RUN addgroup runner
 RUN adduser -S -u 1001 -h /home/runner -G runner runner
