@@ -1,0 +1,33 @@
+name: Cache
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  save:
+    runs-on: windows-11-arm
+
+    steps:
+      - run: echo "Hello from windows-11-arm" > hello.txt
+
+      - run: choco install zstandard
+
+      - uses: actions/cache@v4
+        id: cache-hello
+        with:
+          path: hello.txt
+          key: hello-key
+          enableCrossOsArchive: true
+
+  restore:
+    needs: [save]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/cache/restore@v4
+        with:
+          path: hello.txt
+          key: hello-key
+          enableCrossOsArchive: true
+          fail-on-cache-miss: true
