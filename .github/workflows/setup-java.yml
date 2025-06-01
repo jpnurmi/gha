@@ -8,18 +8,19 @@ on:
 
 jobs:
   setup-java:
-    runs-on: ${{ matrix.os }}
-    container: ${{ matrix.container }}
+    runs-on: ${{ matrix.os.host }}
+    container: ${{ matrix.os.container }}
     strategy:
       fail-fast: false
       matrix:
-        java-version: [17, 21]
         java-distribution: [temurin, microsoft]
-        os: [windows-latest, windows-11-arm]
-        include:
-          - os: ubuntu-latest
-          - os: ubuntu-latest
+        java-version: [17, 21]
+        os:
+          - host: ubuntu-latest
+          - host: ubuntu-latest
             container: alpine:3.21
+          - host: windows-latest
+          - host: windows-11-arm
 
     steps:
       - uses: actions/checkout@v4
@@ -28,7 +29,7 @@ jobs:
         if: ${{ runner.os == 'Windows' }}
 
       - run: apk update && apk add file tree
-        if: ${{ contains(matrix.container, 'alpine') }}
+        if: ${{ contains(matrix.os.container, 'alpine') }}
 
       - uses: actions/setup-java@v3
         with:
