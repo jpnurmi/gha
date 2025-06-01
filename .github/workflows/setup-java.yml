@@ -6,28 +6,44 @@ on:
       - '**/setup-java.yml'
   workflow_dispatch:
 
-defaults:
-  run:
-    shell: pwsh
-
 jobs:
   setup-java:
     runs-on: ${{ matrix.os }}
+    container: ${{ matrix.container }}
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, windows-11-arm]
+        os: [ubuntu-latest, windows-latest, windows-11-arm]
         java-version: [17, 21]
+        java-distribution: ['temurin', 'microsoft']
+        include:
+          - os: ubuntu-latest
+            container: alpine:3.21
 
     steps:
       - uses: actions/checkout@v4
+
       - uses: ./.github/actions/dumpbin
+        if: ${{ runner.os == 'Windows' }}
+
+      - run: apk update && apk add file tree
+        if: ${{ contains(matrix.container, 'alpine' }}
 
       - uses: actions/setup-java@v3
         with:
-          distribution: ${{ runner.os == 'Windows' && runner.arch == 'ARM64' && 'microsoft' || 'temurin '}}
+          distribution: ${{ matrix.java-distribution }}
           java-version: ${{ matrix.java-version }}
 
-      - run: Get-Command java
-      - run: dumpbin /headers (Get-Command java).source
+      - run: |
+          Get-Command java
+          dumpbin /headers (Get-Command java).source
+        shell: pwsh
+        if: ${{ runner.os == 'Windows' }}
+
+      - run: |
+          which java
+          file $(which java)
+        shell: bash
+        if: ${{ runner.os == 'Linux' }}
+
       - run: java -version
