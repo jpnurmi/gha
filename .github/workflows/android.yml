@@ -6,21 +6,27 @@ on:
       - '**/android.yml'
   workflow_dispatch:
 
-defaults:
-  run:
-    shell: pwsh
-
 jobs:
   setup-android:
+    name: setup-android (${{ matrix.container || matrix.os }})
     runs-on: ${{ matrix.os }}
+    container: ${{ matrix.container }}
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, windows-11-arm]
+        include:
+          - os: ubuntu-latest
+          - os: ubuntu-latest
+            container: ghcr.io/jpnurmi/alpine:3.21
+          - os: ubuntu-24.04-arm
+          - os: windows-latest
+          - os: windows-11-arm
 
     steps:
       - uses: actions/checkout@v4
+
       - uses: ./.github/actions/dumpbin
+        if: ${{ runner.os == 'Windows' }}
 
       - uses: actions/setup-java@v3
         with:
@@ -32,5 +38,13 @@ jobs:
           log-accepted-android-sdk-licenses: false
 
       - run: sdkmanager "build-tools;34.0.0"
-      #- run: tree ${env:ANDROID_SDK_ROOT}/build-tools/34.0.0 /F
-      - run: dumpbin /headers ${env:ANDROID_SDK_ROOT}/build-tools/34.0.0/aapt.exe
+
+      - run: |
+          dumpbin /headers ${env:ANDROID_SDK_ROOT}/build-tools/34.0.0/aapt.exe
+        if: ${{ runner.os == 'Windows' }}
+
+      - run: |
+          file $ANDROID_SDK_ROOT/build-tools/34.0.0/aapt
+        if: ${{ runner.os == 'Linux' }}
+
+      - run: $ANDROID_SDK_ROOT/build-tools/34.0.0/aapt --help
