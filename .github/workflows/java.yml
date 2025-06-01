@@ -1,9 +1,9 @@
-name: Setup Java
+name: Java
 
 on:
   push:
     paths:
-      - '**/setup-java.yml'
+      - '**/java.yml'
   workflow_dispatch:
 
 jobs:

@@ -1,14 +1,14 @@
-name: Setup Dotnet
+name: Python
 
 on:
   push:
     paths:
-      - '**/setup-dotnet.yml'
+      - '**/python.yml'
   workflow_dispatch:
 
 jobs:
-  setup-dotnet:
-    name: setup-dotnet (${{ matrix.container || matrix.os }})
+  setup-python:
+    name: setup-python (${{ matrix.container || matrix.os }})
     runs-on: ${{ matrix.os }}
     container: ${{ matrix.container }}
     strategy:
@@ -28,22 +28,23 @@ jobs:
       - uses: ./.github/actions/dumpbin
         if: ${{ runner.os == 'Windows' }}
 
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/setup-python@v5
         with:
-          dotnet-version: |
-            8.0.x
-            9.0.203
+          python-version: "3.12"
+          # Error: Cache folder path is retrieved for pip but doesn't exist on disk: c:\users\runneradmin\appdata\local\pip\cache.
+          # This likely indicates that there are no dependencies to cache. Consider removing the cache step if it is not needed.
+          # cache: "pip"
 
       - run: |
-          Get-Command dotnet
-          dumpbin /headers (Get-Command dotnet).source
+          Get-Command python3
+          dumpbin /headers (Get-Command python3).Source
         shell: pwsh
         if: ${{ runner.os == 'Windows' }}
 
       - run: |
-          file /usr/share/dotnet/dotnet
+          which python3
+          file $(realpath $(which python3))
         shell: bash
         if: ${{ runner.os == 'Linux' }}
 
-      - run: dotnet --version
-      - run: dotnet --list-sdks
+      - run: python3 --version

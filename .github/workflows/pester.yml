@@ -2,7 +2,8 @@ name: Pester
 
 on:
   push:
-    paths: '**/pester.yml'
+    paths:
+      - '**/pester.yml'
   workflow_dispatch:
 
 jobs:

@@ -1,4 +1,4 @@
-name: Build Alpine Linux Docker image
+name: Alpine
 
 on:
   push:
