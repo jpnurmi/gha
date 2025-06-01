@@ -21,7 +21,7 @@ jobs:
           - host: ubuntu-latest
           - host: ubuntu-24.04-arm
           - host: ubuntu-latest
-            container: alpine:3.21
+            container: ghcr.io/jpnurmi/alpine:3.21
           - host: windows-latest
           - host: windows-11-arm
 
@@ -30,9 +30,6 @@ jobs:
 
       - uses: ./.github/actions/dumpbin
         if: ${{ runner.os == 'Windows' }}
-
-      - run: apk update && apk add bash file tree
-        if: ${{ contains(matrix.os.container, 'alpine') }}
 
       - uses: actions/setup-java@v3
         with:
