@@ -19,6 +19,7 @@ jobs:
         java-version: [17, 21]
         os:
           - host: ubuntu-latest
+          - host: ubuntu-latest-arm
           - host: ubuntu-latest
             container: alpine:3.21
           - host: windows-latest
