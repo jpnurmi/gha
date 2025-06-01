@@ -47,4 +47,4 @@ jobs:
           file $ANDROID_SDK_ROOT/build-tools/34.0.0/aapt
         if: ${{ runner.os == 'Linux' }}
 
-      - run: $ANDROID_SDK_ROOT/build-tools/34.0.0/aapt --help
+      - run: $ANDROID_SDK_ROOT/build-tools/34.0.0/aapt version
