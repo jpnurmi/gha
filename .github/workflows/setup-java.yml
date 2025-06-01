@@ -27,7 +27,7 @@ jobs:
         if: ${{ runner.os == 'Windows' }}
 
       - run: apk update && apk add file tree
-        if: ${{ contains(matrix.container, 'alpine' }}
+        if: ${{ contains(matrix.container, 'alpine') }}
 
       - uses: actions/setup-java@v3
         with:
