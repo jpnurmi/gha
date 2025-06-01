@@ -41,10 +41,10 @@ jobs:
 
       - run: |
           dumpbin /headers ${env:ANDROID_SDK_ROOT}/build-tools/34.0.0/aapt.exe
+          ${env:ANDROID_SDK_ROOT}/build-tools/34.0.0/aapt.exe version
         if: ${{ runner.os == 'Windows' }}
 
       - run: |
           file $ANDROID_SDK_ROOT/build-tools/34.0.0/aapt
+          $ANDROID_SDK_ROOT/build-tools/34.0.0/aapt version
         if: ${{ runner.os == 'Linux' }}
-
-      - run: $ANDROID_SDK_ROOT/build-tools/34.0.0/aapt version
