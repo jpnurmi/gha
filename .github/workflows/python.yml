@@ -56,11 +56,12 @@ jobs:
     container: alpine:3.21
 
     steps:
-      - uses: actions/checkout@v4
-
       - run: |
           apk update
+          apk add --no-cache bash curl git file lsb-release-minimal sudo tar wget
           apk add --no-cache python3 python3-dev py3-pip
+
+      - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v5
         with:
