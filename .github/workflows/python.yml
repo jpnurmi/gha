@@ -57,7 +57,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['', '3.12', '3.13']
+        include:
+          - os: ubuntu-latest
+          - PYTHON_VERSION: ''
+          - PYTHON_VERSION: '3.12'
+          - PYTHON_VERSION: '3.13'
+
+    env:
+      PYTHON_VERSION: ${{ contains(toJSON(matrix), 'PYTHON_VERSION') && matrix.PYTHON_VERSION || '3.11' }}
 
     steps:
       - run: |
@@ -69,7 +76,7 @@ jobs:
 
       - uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version || '3.11' }}
+          python-version: ${{ env['PYTHON_VERSION'] }}
           # Error: Cache folder path is retrieved for pip but doesn't exist on disk: c:\users\runneradmin\appdata\local\pip\cache.
           # This likely indicates that there are no dependencies to cache. Consider removing the cache step if it is not needed.
           cache: "pip"
