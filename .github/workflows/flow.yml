@@ -5,14 +5,6 @@ on:
     paths:
       - '**/flow.yml'
   workflow_dispatch:
-  workflow_call:
-    inputs:
-      os:
-        type: string
-        required: false
-      container:
-        type: string
-        required: false
 
 jobs:
   build:
@@ -33,16 +25,16 @@ jobs:
     steps:
       - run: sleep 10s
         shell: bash
-        if: ${{ !!matrix.container }}
+        if: ${{ runner.os == 'Linux' && !matrix.container }}
 
-      - run: sleep 1m
+      - run: sleep 30s
         shell: bash
         if: ${{ runner.os == 'Windows' }}
-    
+
       - uses: actions/checkout@v4
         if: ${{ !!matrix.container }}
 
-      - uses: ./.github/workflows/flow.yml
+      - uses: ./.github/actions/test
         if: ${{ !!matrix.container }}
         with:
           os: matrix.os
@@ -50,9 +42,8 @@ jobs:
 
   test:
     needs: [build]
-    name: test (${{ inputs.container || inputs.os || matrix.os }})
-    runs-on: ${{ inputs.os || matrix.os }}
-    container: ${{ inputs.container }}
+    name: test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
@@ -61,5 +52,4 @@ jobs:
           - os: windows-latest
 
     steps:
-      - run: echo "Hello"
-        shell: bash
+      - uses: ./.github/actions/test
