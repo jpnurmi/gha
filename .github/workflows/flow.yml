@@ -8,23 +8,21 @@ on:
 
 jobs:
   build:
-    name: ${{ matrix.name }} (${{ matrix.container || matrix.os }})
+    name: ${{ matrix.no-mobile && 'Build and test' || 'Build' }} (${{ matrix.container || matrix.os }})
     runs-on: ${{ matrix.os }}
     container: ${{ matrix.container }}
     strategy:
       fail-fast: false
       matrix:
         include:
-          - name: Build
-            os: ubuntu-latest
-          - name: Build
-            os: windows-latest
-          - name: Build and test
-            os: ubuntu-latest
+          - os: ubuntu-latest
+          - os: windows-latest
+          - os: ubuntu-latest
             container: ubuntu:24.04
-          - name: Build and test
-            os: ubuntu-latest
+            no-mobile: true
+          - os: ubuntu-latest
             container: ghcr.io/jpnurmi/alpine:3.21
+            no-mobile: true
 
     steps:
       - uses: actions/checkout@v4
@@ -39,35 +37,7 @@ jobs:
 
       - name: Test
         uses: ./.github/actions/test
-        if: ${{ !!matrix.container }}
-        with:
-          os: matrix.os
-          container: matrix.container
-    
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
-      - name: Dump job context
-        env:
-          JOB_CONTEXT: ${{ toJson(job) }}
-        run: echo "$JOB_CONTEXT"
-      - name: Dump steps context
-        env:
-          STEPS_CONTEXT: ${{ toJson(steps) }}
-        run: echo "$STEPS_CONTEXT"
-      - name: Dump runner context
-        env:
-          RUNNER_CONTEXT: ${{ toJson(runner) }}
-        run: echo "$RUNNER_CONTEXT"
-      - name: Dump strategy context
-        env:
-          STRATEGY_CONTEXT: ${{ toJson(strategy) }}
-        run: echo "$STRATEGY_CONTEXT"
-      - name: Dump matrix context
-        env:
-          MATRIX_CONTEXT: ${{ toJson(matrix) }}
-        run: echo "$MATRIX_CONTEXT"
+        if: ${{ matrix.no-mobile }}
 
   test:
     needs: [build]
@@ -83,3 +53,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/test
+
+  publish:
+    needs: [test]
+    name: Publish
+    runs-on: windows-latest
+
+    steps:
+      - run: echo "Published!"
+        shell: bash

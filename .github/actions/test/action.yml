@@ -1,12 +1,5 @@
 name: Test
 description: Pretends to run tests
-inputs:
-  os:
-    type: string
-    required: false
-  container:
-    type: string
-    required: false
 
 runs:
   using: composite
