@@ -39,6 +39,9 @@ jobs:
         shell: bash
         if: ${{ runner.os == 'Windows' }}
     
+      - uses: actions/checkout@v4
+        if: ${{ !!matrix.container }}
+
       - uses: ./.github/workflows/flow.yml
         if: ${{ !!matrix.container }}
         with:
