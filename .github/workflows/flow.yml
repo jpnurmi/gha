@@ -1,0 +1,62 @@
+name: Flow
+
+on:
+  push:
+    paths:
+      - '**/env.yml'
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      os:
+        type: string
+        required: false
+      container:
+        type: string
+        required: false
+
+jobs:
+  build:
+    name: build (${{ matrix.container || matrix.os }})
+    runs-on: ${{ matrix.os }}
+    container: ${{ matrix.container }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+          - os: ubuntu-latest
+            container: ubuntu:24.04
+          - os: ubuntu-latest
+            container: ghcr.io/jpnurmi/alpine:3.21
+          - os: windows-latest
+
+    steps:
+      - run: sleep 10s
+        shell: bash
+        if: ${{ !!matrix.container }}
+
+      - run: sleep 1m
+        shell: bash
+        if: ${{ runner.os == 'Windows' }}
+    
+      - uses: ./.github/workflows/flow.yml
+        if: ${{ !!matrix.container }}
+        with:
+          os: matrix.os
+          container: matrix.container
+
+  test:
+    needs: [build]
+    name: test (${{ inputs.container || inputs.os || matrix.os }})
+    runs-on: ${{ inputs.os || matrix.os }}
+    container: ${{ inputs.container }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+          - os: windows-latest
+
+    steps:
+      - run: echo "Hello"
+        shell: bash
