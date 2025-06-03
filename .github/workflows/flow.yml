@@ -8,21 +8,27 @@ on:
 
 jobs:
   build:
-    name: build (${{ matrix.container || matrix.os }})
+    name: ${{ matrix.name }} (${{ matrix.container || matrix.os }})
     runs-on: ${{ matrix.os }}
     container: ${{ matrix.container }}
     strategy:
       fail-fast: false
       matrix:
         include:
-          - os: ubuntu-latest
-          - os: ubuntu-latest
+          - name: Build
+            os: ubuntu-latest
+          - name: Build
+            os: windows-latest
+          - name: Build and test
+            os: ubuntu-latest
             container: ubuntu:24.04
-          - os: ubuntu-latest
+          - name: Build and test
+            os: ubuntu-latest
             container: ghcr.io/jpnurmi/alpine:3.21
-          - os: windows-latest
 
     steps:
+      - uses: actions/checkout@v4
+
       - run: sleep 10s
         shell: bash
         if: ${{ runner.os == 'Linux' && !matrix.container }}
@@ -31,10 +37,8 @@ jobs:
         shell: bash
         if: ${{ runner.os == 'Windows' }}
 
-      - uses: actions/checkout@v4
-        if: ${{ !!matrix.container }}
-
-      - uses: ./.github/actions/test
+      - name: Test
+        uses: ./.github/actions/test
         if: ${{ !!matrix.container }}
         with:
           os: matrix.os
@@ -42,7 +46,7 @@ jobs:
 
   test:
     needs: [build]
-    name: test (${{ matrix.os }})
+    name: Test (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
