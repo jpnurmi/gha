@@ -3,7 +3,7 @@ name: Flow
 on:
   push:
     paths:
-      - '**/env.yml'
+      - '**/flow.yml'
   workflow_dispatch:
   workflow_call:
     inputs:
