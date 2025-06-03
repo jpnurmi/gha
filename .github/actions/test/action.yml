@@ -1,9 +1,13 @@
 name: Test
 description: Pretends to run tests
+inputs:
+  duration:
+    type: number
+    required: true
 
 runs:
   using: composite
 
   steps:
-    - run: echo "Hello"
+    - run: sleep ${{ inputs.duration }}
       shell: bash

@@ -38,6 +38,8 @@ jobs:
       - name: Test
         uses: ./.github/actions/test
         if: ${{ matrix.no-mobile }}
+        with:
+          duration: 60
 
   test:
     needs: [build]
@@ -53,6 +55,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/test
+        with:
+          duration: 10
 
   publish:
     needs: [test]
