@@ -11,12 +11,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
-        with:
-          repository: getsentry/sentry-dotnet
-          submodules: recursive
+      # - uses: actions/checkout@v4
+      #   with:
+      #     repository: getsentry/sentry-dotnet
+      #     submodules: recursive
 
-      - run: tree
+      # - run: tree
 
       - uses: actions/checkout@v4
         with:
@@ -27,3 +27,4 @@ jobs:
             .github
 
       - run: tree
+U
