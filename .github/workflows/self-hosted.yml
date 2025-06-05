@@ -12,7 +12,8 @@ jobs:
 
     steps:
       - run: pwd
-      - run: export
 
       - uses: actions/checkout@v4
       - run: tree -a
+
+      - run: sudo ls
