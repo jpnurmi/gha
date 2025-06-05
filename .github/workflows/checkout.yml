@@ -26,4 +26,4 @@ jobs:
             integration-test
             .github
 
-      - run: tree
+      - run: tree -a
