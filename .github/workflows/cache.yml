@@ -13,15 +13,14 @@ jobs:
     steps:
       - run: echo "Hello from windows-11-arm" > hello.txt
 
+      - run: choco install zstandard
+
       - uses: actions/cache@v4
         id: cache-hello
         with:
           path: hello.txt
           key: hello-key
           enableCrossOsArchive: true
-
-      - run: choco install zstandard
-        if: steps.cache-hello.outputs.cache-hit != 'true'
 
   restore:
     needs: [save]
