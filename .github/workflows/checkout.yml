@@ -16,7 +16,7 @@ jobs:
           repository: getsentry/sentry-dotnet
           submodules: recursive
 
-      - run: tree -a
+      - run: ls -a
 
       - uses: actions/checkout@v4
         with:
@@ -27,4 +27,4 @@ jobs:
             .github
           sparse-checkout-cone-mode: false
 
-      - run: tree -a
+      - run: ls -a
