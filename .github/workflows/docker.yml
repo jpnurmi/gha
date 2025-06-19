@@ -34,9 +34,9 @@ jobs:
           dotnet nuget add source $PWD/local-packages --name local-packages
           dotnet nuget list source
 
-      - name: Setup Project
+      - name: Build Project
         run: |
-          dotnet new console -n helloworld -o . --aot
+          dotnet new console -n hello-sentry -o . --aot
           dotnet add package Sentry --prerelease --source ./local-packages
           cat > Program.cs <<'EOF'
           SentrySdk.Init(options =>
@@ -46,9 +46,7 @@ jobs:
           });
           Console.WriteLine("Hello, Sentry!");
           EOF
-
-      - name: Publish Project
-        run: dotnet publish -p:EnableSdkContainerSupport=true -t:PublishContainer
+          dotnet publish -p:EnableSdkContainerSupport=true -t:PublishContainer
 
       - name: Run Docker Container
-        run: docker run helloworld
+        run: docker run hello-sentry
