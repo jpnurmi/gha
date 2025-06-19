@@ -16,10 +16,20 @@ jobs:
           dotnet-version: |
             9.0.301
 
+      - uses: actions/download-artifact@v4
+        with:
+          # ${{ github.sha }}
+          name: b47c4db022aff8e35579dec566d619dbd0542dc7
+          path: src
+          repository: getsentry/sentry-dotnet
+
       - run: |
           dotnet new console -o HelloWorld --aot
           cd HelloWorld
-          dotnet add package Sentry --version 5.11.0
+          mkdir local-packages
+          cp ../src/Sentry/bin/Release/Sentry.*.nupkg local-packages
+          dotnet nuget add source ./local-packages
+          dotnet add package Sentry --prerelease --source ./local-packages
           cat > Program.cs <<'EOF'
           SentrySdk.Init(options =>
           {
