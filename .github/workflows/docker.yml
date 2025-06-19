@@ -1,4 +1,4 @@
-name: Alpine
+name: Docker
 
 on:
   push:
@@ -28,6 +28,6 @@ jobs:
           });
           Console.WriteLine("Hello, Sentry!");
           EOF
-    
-      - run: dotnet publish -p:EnableSdkContainerSupport=true -t:PublishContainer
+          dotnet publish -p:EnableSdkContainerSupport=true -t:PublishContainer
+
       - run: docker run --rm helloworld
