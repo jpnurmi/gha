@@ -34,9 +34,8 @@ jobs:
           sparse-checkout: |
             integration-test
             .github
-            src/**/Release/*.nupkg
-            src/**/Release/*.snupkg
           sparse-checkout-cone-mode: false
+          clean: false
 
       - run: ls -a
 
