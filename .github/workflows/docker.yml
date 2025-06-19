@@ -16,12 +16,16 @@ jobs:
           dotnet-version: |
             9.0.301
 
-      - uses: actions/download-artifact@v4
-        with:
-          # ${{ github.sha }}
-          name: b47c4db022aff8e35579dec566d619dbd0542dc7
-          path: src
-          repository: getsentry/sentry-dotnet
+    #   - uses: actions/download-artifact@v4
+    #     with:
+    #       # ${{ github.sha }}
+    #       name: b47c4db022aff8e35579dec566d619dbd0542dc7
+    #       path: src
+    #       repository: getsentry/sentry-dotnet
+
+      - run: |
+          mkdir -p src/Sentry/bin/Release
+          wget https://www.nuget.org/api/v2/package/Sentry/5.11.0-alpha.3 -o src/Sentry/bin/Release/Sentry.5.11.0-alpha.3.nupkg
 
       - run: |
           dotnet new console -o HelloWorld --aot
