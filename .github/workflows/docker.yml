@@ -36,7 +36,8 @@ jobs:
 
       - name: Build Project
         run: |
-          dotnet new console -n hello-sentry -o . --aot
+          dotnet new console -o hello-sentry --aot
+          cd hello-sentry
           dotnet add package Sentry --prerelease --source ./local-packages
           cat > Program.cs <<'EOF'
           SentrySdk.Init(options =>
