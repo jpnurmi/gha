@@ -25,5 +25,6 @@ jobs:
           sparse-checkout: |
             integration-test
             .github
+          sparse-checkout-cone-mode: false
 
       - run: tree -a
