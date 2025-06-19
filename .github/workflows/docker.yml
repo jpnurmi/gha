@@ -25,7 +25,7 @@ jobs:
 
       - run: |
           mkdir -p src/Sentry/bin/Release
-          curl https://www.nuget.org/api/v2/package/Sentry/5.11.0-alpha.3 -o src/Sentry/bin/Release/Sentry.5.11.0-alpha.3.nupkg
+          curl -L https://www.nuget.org/api/v2/package/Sentry/5.11.0-alpha.3 -o src/Sentry/bin/Release/Sentry.5.11.0-alpha.3.nupkg
 
       - run: |
           dotnet new console -o HelloWorld --aot
