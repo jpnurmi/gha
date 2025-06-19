@@ -27,13 +27,16 @@ jobs:
           mkdir -p src/Sentry/bin/Release
           curl -L https://www.nuget.org/api/v2/package/Sentry/5.11.0 -o src/Sentry/bin/Release/Sentry.5.11.0.nupkg
 
-      - run: |
-          dotnet new console -o HelloWorld --aot
-          cd HelloWorld
+      - name: Setup Local Source
+        run: |
           mkdir local-packages
-          cp ../src/Sentry/bin/Release/Sentry.*.nupkg local-packages/
+          cp src/Sentry/bin/Release/Sentry.*.nupkg local-packages/
           dotnet nuget add source $PWD/local-packages --name local-packages
           dotnet nuget list source
+
+      - name: Setup Project
+        run: |
+          dotnet new console --aot
           dotnet add package Sentry --prerelease --source ./local-packages
           cat > Program.cs <<'EOF'
           SentrySdk.Init(options =>
@@ -43,6 +46,9 @@ jobs:
           });
           Console.WriteLine("Hello, Sentry!");
           EOF
-          dotnet publish -p:EnableSdkContainerSupport=true -t:PublishContainer
 
-      - run: docker run --rm helloworld
+      - name: Publish Project
+        run: dotnet publish -p:EnableSdkContainerSupport=true -t:PublishContainer
+
+      - name: Run Docker Container
+        run: docker run --rm helloworld
