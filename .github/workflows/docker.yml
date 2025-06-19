@@ -36,7 +36,7 @@ jobs:
 
       - name: Setup Project
         run: |
-          dotnet new console --aot --name helloworld -o .
+          dotnet new console -n helloworld -o . --aot
           dotnet add package Sentry --prerelease --source ./local-packages
           cat > Program.cs <<'EOF'
           SentrySdk.Init(options =>
