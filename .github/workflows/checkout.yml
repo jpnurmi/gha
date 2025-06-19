@@ -1,0 +1,29 @@
+name: Checkout
+
+on:
+  push:
+    paths:
+      - '**/checkout.yml'
+  workflow_dispatch:
+
+jobs:
+  checkout:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: getsentry/sentry-dotnet
+          submodules: recursive
+
+      - run: tree -a
+
+      - uses: actions/checkout@v4
+        with:
+          repository: getsentry/sentry-dotnet
+          submodules: false
+          sparse-checkout: |
+            integration-test
+            .github
+
+      - run: tree -a
