@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    #   - uses: actions/setup-dotnet@v4
-    #     with:
-    #       dotnet-version: |
-    #         9.0.301
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            9.0
 
     #   - uses: actions/download-artifact@v4
     #     with:
@@ -36,9 +36,8 @@ jobs:
 
       - name: Build Project
         run: |
-          dotnet new console -o hello-sentry --aot
-          cd hello-sentry
-          dotnet add package Sentry --prerelease --source ../local-packages
+          dotnet new console --aot -n hello-sentry -o .
+          dotnet add package Sentry --prerelease --source ./local-packages
           cat > Program.cs <<'EOF'
           SentrySdk.Init(options =>
           {
@@ -47,7 +46,9 @@ jobs:
           });
           Console.WriteLine("Hello, Sentry!");
           EOF
-          dotnet publish -p:EnableSdkContainerSupport=true -t:PublishContainer
+
+      - name: Publish Project
+        run: dotnet publish -p:EnableSdkContainerSupport=true -t:PublishContainer
 
       - name: Run Docker Container
         run: docker run hello-sentry
