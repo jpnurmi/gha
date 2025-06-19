@@ -28,6 +28,6 @@ jobs:
           });
           Console.WriteLine("Hello, Sentry!");
           EOF
-          dotnet publish -p:EnableSdkContainerSupport=true -t:PublishContainer
+          dotnet publish -p:EnableSdkContainerSupport=true -t:PublishContainer -p:SentryNative=false
 
       - run: docker run --rm helloworld
