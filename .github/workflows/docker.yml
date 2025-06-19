@@ -1,0 +1,33 @@
+name: Alpine
+
+on:
+  push:
+    paths:
+      - '**/docker.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            9.0.301
+
+      - run: |
+          dotnet new console -o HelloWorld --aot
+          cd HelloWorld
+          dotnet add package Sentry --version 5.11.0
+          cat > Program.cs <<'EOF'
+          SentrySdk.Init(options =>
+          {
+              options.Dsn = "https://foo@sentry.invalid/42";
+              options.Debug = true;
+          });
+          Console.WriteLine("Hello, Sentry!");
+          EOF
+    
+      - run: dotnet publish -p:EnableSdkContainerSupport=true -t:PublishContainer
+      - run: docker run --rm helloworld
