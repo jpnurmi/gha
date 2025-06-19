@@ -32,7 +32,7 @@ jobs:
           cd HelloWorld
           mkdir local-packages
           cp ../src/Sentry/bin/Release/Sentry.*.nupkg local-packages/
-          dotnet nuget add source ./local-packages
+          dotnet nuget add source ./local-packages --name local-packages
           dotnet nuget list source
           dotnet add package Sentry --prerelease --source ./local-packages
           cat > Program.cs <<'EOF'
