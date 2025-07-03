@@ -18,6 +18,16 @@ jobs:
           - os: windows-latest
 
     steps:
+      - run: |
+          dir env:
+        shell: pwsh
+
       - shell: pwsh
         run: |
           nuget.exe install Microsoft.GDK.PC -Version 2504.1.4046 -OutputDirectory packages
+
+      - shell: bash
+        run: tree C:/Users/runneradmin/.nuget/packages/microsoft.gdk.pc
+
+      - shell: bash
+        run: tree ${{ github.workspace }}/packages
