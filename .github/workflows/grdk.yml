@@ -1,0 +1,23 @@
+name: GRDK
+
+on:
+  push:
+    paths:
+      - '**/grdk.yml'
+  workflow_dispatch:
+
+jobs:
+  grdk:
+    name: GRDK (${{ matrix.container || matrix.os }})
+    runs-on: ${{ matrix.os }}
+    container: ${{ matrix.container }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+
+    steps:
+      - shell: pwsh
+        run: |
+          nuget.exe install Microsoft.GDK.PC -Version 2504.1.4046 -OutputDirectory packages
