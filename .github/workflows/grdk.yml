@@ -27,7 +27,13 @@ jobs:
           nuget.exe install Microsoft.GDK.PC -Version 2504.1.4046 -OutputDirectory packages
 
       - shell: pwsh
-        run: tree /F C:\Users\runneradmin\.nuget\packages\microsoft.gdk.pc
+        run: tree /F /A C:\Users\runneradmin\.nuget\packages\microsoft.gdk.pc
 
       - shell: pwsh
-        run: tree /F ${{ github.workspace }}\packages
+        run: tree /F /A ${{ github.workspace }}\packages
+
+      - shell: pwsh
+        run: Get-ChildItem -Recurse -Path C:\Users\runneradmin\.nuget\packages\microsoft.gdk.pc -Include *.cmd -File
+
+      - shell: pwsh
+        run: Get-ChildItem -Recurse -Path ${{ github.workspace }}\packages -Include *.cmd -File
