@@ -23,7 +23,7 @@ jobs:
       with:
 #          "C:/Program Files (x86)/Microsoft GDK/${{ env.GDK_VERSION }}"
         path: |
-          "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/MSBuild/Microsoft/VC/v170/Platforms/Gaming.Desktop.x64/${{ env.GDK_VERSION }}"
+          C:/Program Files/Microsoft Visual Studio/2022/Enterprise/MSBuild/Microsoft/VC/v170/Platforms/Gaming.Desktop.x64/${{ env.GDK_VERSION }}
         key: gdk-${{ env.GDK_VERSION }}
         enableCrossOsArchive: true
         
@@ -78,7 +78,7 @@ jobs:
       with:
 #          "C:/Program Files (x86)/Microsoft GDK/${{ env.GDK_VERSION }}"
         path: |
-          "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/MSBuild/Microsoft/VC/v170/Platforms/Gaming.Desktop.x64/${{ env.GDK_VERSION }}"
+          C:/Program Files/Microsoft Visual Studio/2022/Enterprise/MSBuild/Microsoft/VC/v170/Platforms/Gaming.Desktop.x64/${{ env.GDK_VERSION }}
         key: gdk-${{ env.GDK_VERSION }}
         enableCrossOsArchive: true
         
@@ -99,7 +99,7 @@ jobs:
       with:
 #          "C:/Program Files (x86)/Microsoft GDK/${{ env.GDK_VERSION }}"
         path: |
-          "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/MSBuild/Microsoft/VC/v170/Platforms/Gaming.Desktop.x64/${{ env.GDK_VERSION }}"
+          C:/Program Files/Microsoft Visual Studio/2022/Enterprise/MSBuild/Microsoft/VC/v170/Platforms/Gaming.Desktop.x64/${{ env.GDK_VERSION }}
         key: gdk-${{ env.GDK_VERSION }}
         enableCrossOsArchive: true
         fail-on-cache-miss: true
