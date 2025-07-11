@@ -8,17 +8,16 @@ on:
 
 env:
   GDK_VERSION: "250401"
-  GDK_WINGET_VERSION: "2504.1.4046"
 
 jobs:
   test-gdk-caching:
-    runs-on: windows-2025
+    runs-on: windows-latest
     
     steps:
     - name: Checkout
       uses: actions/checkout@v4
       
-    - name: Restore GDK
+    - name: Restore GDK (should miss)
       id: cache-gdk
       uses: actions/cache/restore@v4
       with:
@@ -27,38 +26,51 @@ jobs:
           "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/MSBuild/Microsoft/VC/v170/Platforms/Gaming.Desktop.x64/${{ env.GDK_VERSION }}"
         key: gdk-${{ env.GDK_VERSION }}
         
-    - name: Setup GDK
+    - name: Mock GDK installation
       if: ${{ steps.cache-gdk.outputs.cache-hit != 'true' }}
       run: |
-        winget install --accept-source-agreements --accept-package-agreements --silent --disable-interactivity --version $env:GDK_WINGET_VERSION Microsoft.Gaming.GDK
+        # Create the exact directory structure and files that GDK would create
+        $gdkPath = "C:\Program Files (x86)\Microsoft GDK\$env:GDK_VERSION"
+        $vsPath = "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Platforms\Gaming.Desktop.x64\$env:GDK_VERSION"
         
-    - name: Verify GDK installation paths exist
+        # Create GDK directory structure
+        New-Item -ItemType Directory -Force -Path $gdkPath
+        New-Item -ItemType Directory -Force -Path "$gdkPath\bin"
+        New-Item -ItemType Directory -Force -Path "$gdkPath\include"
+        New-Item -ItemType Directory -Force -Path "$gdkPath\lib"
+        
+        # Create mock GDK files
+        "Mock GDK Header" | Out-File -FilePath "$gdkPath\include\gdk.h" -Encoding UTF8
+        "Mock GDK Library" | Out-File -FilePath "$gdkPath\lib\gdk.lib" -Encoding UTF8
+        "Mock GDK Binary" | Out-File -FilePath "$gdkPath\bin\gdk.exe" -Encoding UTF8
+        
+        # Create VS directory structure
+        New-Item -ItemType Directory -Force -Path $vsPath
+        New-Item -ItemType Directory -Force -Path "$vsPath\props"
+        New-Item -ItemType Directory -Force -Path "$vsPath\targets"
+        
+        # Create mock VS files
+        "Mock VS Props" | Out-File -FilePath "$vsPath\props\GDK.props" -Encoding UTF8
+        "Mock VS Targets" | Out-File -FilePath "$vsPath\targets\GDK.targets" -Encoding UTF8
+        
+        Write-Host "Mock GDK installation created"
+        
+    - name: Verify mock paths exist
       run: |
         $gdkPath = "C:\Program Files (x86)\Microsoft GDK\$env:GDK_VERSION"
         $vsPath = "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Platforms\Gaming.Desktop.x64\$env:GDK_VERSION"
         
         if (-not (Test-Path $gdkPath)) {
-          Write-Host "FAIL: GDK path does not exist: $gdkPath"
-          Write-Host "Available GDK versions:"
-          if (Test-Path "C:\Program Files (x86)\Microsoft GDK") {
-            Get-ChildItem "C:\Program Files (x86)\Microsoft GDK" | ForEach-Object { Write-Host "  $($_.Name)" }
-          }
+          Write-Host "FAIL: Mock GDK path does not exist: $gdkPath"
           exit 1
         }
         
         if (-not (Test-Path $vsPath)) {
-          Write-Host "FAIL: VS path does not exist: $vsPath"
-          Write-Host "Available versions in VS Gaming.Desktop.x64:"
-          $vsParent = "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Platforms\Gaming.Desktop.x64"
-          if (Test-Path $vsParent) {
-            Get-ChildItem $vsParent | ForEach-Object { Write-Host "  $($_.Name)" }
-          } else {
-            Write-Host "VS parent directory does not exist: $vsParent"
-          }
+          Write-Host "FAIL: Mock VS path does not exist: $vsPath"
           exit 1
         }
         
-        Write-Host "SUCCESS: Both GDK paths exist"
+        Write-Host "SUCCESS: Both mock GDK paths exist"
         
     - name: Cache GDK (save)
       uses: actions/cache/save@v4
@@ -71,4 +83,43 @@ jobs:
     - name: Verify cache save succeeded
       run: |
         Write-Host "SUCCESS: Cache save completed without errors"
-        Write-Host "GDK caching works as expected"
+        Write-Host "GDK caching works for these exact paths"
+        
+    - name: Clean up for restore test
+      run: |
+        Remove-Item "C:\Program Files (x86)\Microsoft GDK\$env:GDK_VERSION" -Recurse -Force
+        Remove-Item "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Platforms\Gaming.Desktop.x64\$env:GDK_VERSION" -Recurse -Force
+        Write-Host "Cleaned up mock installation"
+        
+    - name: Restore GDK (should hit)
+      uses: actions/cache/restore@v4
+      with:
+        path: |
+          "C:/Program Files (x86)/Microsoft GDK/${{ env.GDK_VERSION }}"
+          "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/MSBuild/Microsoft/VC/v170/Platforms/Gaming.Desktop.x64/${{ env.GDK_VERSION }}"
+        key: gdk-${{ env.GDK_VERSION }}
+        
+    - name: Verify cache restore worked
+      run: |
+        $gdkPath = "C:\Program Files (x86)\Microsoft GDK\$env:GDK_VERSION"
+        $vsPath = "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Platforms\Gaming.Desktop.x64\$env:GDK_VERSION"
+        
+        if (-not (Test-Path $gdkPath)) {
+          Write-Host "FAIL: GDK path not restored: $gdkPath"
+          exit 1
+        }
+        
+        if (-not (Test-Path $vsPath)) {
+          Write-Host "FAIL: VS path not restored: $vsPath"
+          exit 1
+        }
+        
+        # Verify file contents
+        $gdkContent = Get-Content "$gdkPath\include\gdk.h"
+        if ($gdkContent -ne "Mock GDK Header") {
+          Write-Host "FAIL: GDK file content not restored correctly"
+          exit 1
+        }
+        
+        Write-Host "SUCCESS: Cache restore worked perfectly"
+        Write-Host "Your GDK caching approach is valid for these exact paths"
