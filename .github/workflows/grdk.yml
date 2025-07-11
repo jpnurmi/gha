@@ -49,11 +49,20 @@ jobs:
           path: GDK_2504.1.4046.zip
           key: gdk-2504.1.4046
 
+      # - name: Install GDK
+      #   run: |
+      #     Expand-Archive GDK_2504.1.4046.zip -DestinationPath gdk
+      #     $gdk_installer = Start-Process -FilePath ".\gdk\PGDK.exe" -ArgumentList "/features", "+", "/quiet", "/norestart" -PassThru
+      #     $gdk_installer | Wait-Process
+
       - name: Install GDK
+        shell: bash
         run: |
-          Expand-Archive GDK_2504.1.4046.zip -DestinationPath gdk
-          $gdk_installer = Start-Process -FilePath ".\gdk\PGDK.exe" -ArgumentList "/features", "+", "/quiet", "/norestart" -PassThru
-          $gdk_installer | Wait-Process
+          unzip -q GDK_2504.1.4046.zip -d gdk
+          tail -F gdk.log &
+          TAIL_PID=$!
+          pwsh -NoProfile -Command "& {Start-Process -FilePath './gdk/PGDK.exe' -ArgumentList '/features','+','/quiet','/norestart','/log','gdk.log' -Wait}"
+          kill $TAIL_PID
 
       - run: |
           dir env:
