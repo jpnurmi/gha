@@ -1,0 +1,223 @@
+name: Program Files
+
+on:
+  push:
+    paths:
+      - "**/program-files.yml"
+  workflow_dispatch:
+
+jobs:
+  test-program-files-caching:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Create test directories and files
+      run: |
+        # Create test directories in Program Files
+        Write-Host "Creating test directories..."
+        $testDirs = @(
+          "C:\Program Files\TestApp",
+          "C:\Program Files (x86)\TestApp"
+        )
+        
+        foreach ($dir in $testDirs) {
+          New-Item -ItemType Directory -Force -Path $dir
+          
+          # Create some test files
+          "Test content $(Get-Date)" | Out-File -FilePath "$dir\test.txt" -Encoding UTF8
+          "Binary test" | Out-File -FilePath "$dir\test.bin" -Encoding UTF8
+          
+          # Create a subdirectory with files
+          New-Item -ItemType Directory -Force -Path "$dir\subdir"
+          "Subdirectory content" | Out-File -FilePath "$dir\subdir\sub.txt" -Encoding UTF8
+        }
+        
+        Write-Host "✓ Test directories created successfully"
+        
+    - name: Verify directories exist and show permissions
+      run: |
+        Write-Host "=== Directory Verification ==="
+        $testDirs = @(
+          "C:\Program Files\TestApp",
+          "C:\Program Files (x86)\TestApp"
+        )
+        
+        foreach ($dir in $testDirs) {
+          if (Test-Path $dir) {
+            Write-Host "✓ $dir exists"
+            Write-Host "  Files:"
+            Get-ChildItem $dir -Recurse | ForEach-Object { Write-Host "    $($_.FullName)" }
+            
+            # Check permissions
+            Write-Host "  Permissions:"
+            $acl = Get-Acl $dir
+            $acl.Access | ForEach-Object { 
+              Write-Host "    $($_.IdentityReference): $($_.FileSystemRights) ($($_.AccessControlType))"
+            }
+          } else {
+            Write-Host "✗ $dir does not exist"
+          }
+          Write-Host ""
+        }
+        
+        Write-Host "Current user: $env:USERNAME"
+        Write-Host "User groups:"
+        whoami /groups /fo csv | ConvertFrom-Csv | ForEach-Object { Write-Host "  $($_.'Group Name')" }
+        
+    - name: Test cache save
+      id: cache-save
+      uses: actions/cache/save@v4
+      with:
+        path: |
+          C:\Program Files\TestApp
+          C:\Program Files (x86)\TestApp
+        key: test-program-files-${{ github.run_id }}
+      continue-on-error: true
+        
+    - name: Analyze cache save result
+      run: |
+        Write-Host "=== Cache Save Analysis ==="
+        if ("${{ steps.cache-save.outcome }}" -eq "success") {
+          Write-Host "✓ Cache save succeeded"
+        } else {
+          Write-Host "✗ Cache save failed"
+          Write-Host "Outcome: ${{ steps.cache-save.outcome }}"
+        }
+        
+    - name: Remove test directories
+      if: always()
+      run: |
+        Write-Host "=== Cleanup ==="
+        $testDirs = @(
+          "C:\Program Files\TestApp",
+          "C:\Program Files (x86)\TestApp"
+        )
+        
+        foreach ($dir in $testDirs) {
+          if (Test-Path $dir) {
+            try {
+              Remove-Item $dir -Recurse -Force
+              Write-Host "✓ Removed $dir"
+            } catch {
+              Write-Host "✗ Failed to remove $dir`: $($_.Exception.Message)"
+            }
+          }
+        }
+        
+    - name: Test cache restore (if save succeeded)
+      if: steps.cache-save.outcome == 'success'
+      uses: actions/cache/restore@v4
+      with:
+        path: |
+          C:\Program Files\TestApp
+          C:\Program Files (x86)\TestApp
+        key: test-program-files-${{ github.run_id }}
+        
+    - name: Verify cache restore (if save succeeded)
+      if: steps.cache-save.outcome == 'success'
+      run: |
+        Write-Host "=== Cache Restore Verification ==="
+        $testDirs = @(
+          "C:\Program Files\TestApp",
+          "C:\Program Files (x86)\TestApp"
+        )
+        
+        foreach ($dir in $testDirs) {
+          if (Test-Path $dir) {
+            Write-Host "✓ $dir restored successfully"
+            Write-Host "  Restored files:"
+            Get-ChildItem $dir -Recurse | ForEach-Object { Write-Host "    $($_.FullName)" }
+          } else {
+            Write-Host "✗ $dir was not restored"
+          }
+        }
+        
+    - name: Final cleanup
+      if: always()
+      run: |
+        Write-Host "=== Final Cleanup ==="
+        $testDirs = @(
+          "C:\Program Files\TestApp",
+          "C:\Program Files (x86)\TestApp"
+        )
+        
+        foreach ($dir in $testDirs) {
+          if (Test-Path $dir) {
+            try {
+              Remove-Item $dir -Recurse -Force -ErrorAction SilentlyContinue
+              Write-Host "✓ Final cleanup of $dir"
+            } catch {
+              Write-Host "Note: Could not clean up $dir (this is expected)"
+            }
+          }
+        }
+        
+  test-alternative-approach:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Test alternative - copy to workspace then cache
+      run: |
+        Write-Host "=== Alternative Approach Test ==="
+        
+        # Create test content in Program Files
+        New-Item -ItemType Directory -Force -Path "C:\Program Files\TestApp2"
+        "Alternative test content $(Get-Date)" | Out-File -FilePath "C:\Program Files\TestApp2\test.txt" -Encoding UTF8
+        
+        # Copy to workspace
+        New-Item -ItemType Directory -Force -Path "cached-program-files"
+        Copy-Item "C:\Program Files\TestApp2" "cached-program-files\" -Recurse -Force
+        
+        Write-Host "✓ Copied Program Files content to workspace"
+        
+    - name: Cache workspace copy
+      uses: actions/cache/save@v4
+      with:
+        path: cached-program-files
+        key: test-workspace-copy-${{ github.run_id }}
+        
+    - name: Test workspace cache restore
+      run: |
+        Write-Host "=== Testing Workspace Cache Restore ==="
+        
+        # Remove original and workspace copy
+        Remove-Item "C:\Program Files\TestApp2" -Recurse -Force -ErrorAction SilentlyContinue
+        Remove-Item "cached-program-files" -Recurse -Force -ErrorAction SilentlyContinue
+        
+        Write-Host "✓ Cleaned up original files"
+        
+    - name: Restore from workspace cache
+      uses: actions/cache/restore@v4
+      with:
+        path: cached-program-files
+        key: test-workspace-copy-${{ github.run_id }}
+        
+    - name: Copy back to Program Files
+      run: |
+        Write-Host "=== Copying Back to Program Files ==="
+        
+        if (Test-Path "cached-program-files\TestApp2") {
+          Copy-Item "cached-program-files\TestApp2" "C:\Program Files\" -Recurse -Force
+          Write-Host "✓ Successfully copied back to Program Files"
+          
+          # Verify
+          if (Test-Path "C:\Program Files\TestApp2\test.txt") {
+            $content = Get-Content "C:\Program Files\TestApp2\test.txt"
+            Write-Host "✓ Restored content: $content"
+          }
+        } else {
+          Write-Host "✗ Cached content not found"
+        }
+        
+    - name: Final cleanup alternative test
+      if: always()
+      run: |
+        Remove-Item "C:\Program Files\TestApp2" -Recurse -Force -ErrorAction SilentlyContinue
+        Remove-Item "cached-program-files" -Recurse -Force -ErrorAction SilentlyContinue
+        Write-Host "✓ Alternative test cleanup complete"
