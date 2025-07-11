@@ -52,7 +52,7 @@ jobs:
       - name: Install GDK
         run: |
           Expand-Archive GDK_2504.1.4046.zip -DestinationPath gdk
-          $gdk_installer = Start-Process -FilePath ".\gdk\PGDK.exe" -ArgumentList "/features", "+". "/quiet", "/norestart" -PassThru
+          $gdk_installer = Start-Process -FilePath ".\gdk\PGDK.exe" -ArgumentList "/features", "+", "/quiet", "/norestart" -PassThru
           $gdk_installer | Wait-Process
 
       - run: |
