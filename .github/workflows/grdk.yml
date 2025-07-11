@@ -59,10 +59,10 @@ jobs:
         shell: bash
         run: |
           unzip -q GDK_2504.1.4046.zip -d gdk
-          tail -F gdk.log &
-          TAIL_PID=$!
+          tail -F gdk.log 2>/dev/null &
+          # TAIL_PID=$!
           pwsh -NoProfile -Command "& {Start-Process -FilePath './gdk/PGDK.exe' -ArgumentList '/features','+','/quiet','/norestart','/log','gdk.log' -Wait}"
-          kill $TAIL_PID
+          # kill $TAIL_PID
 
       - run: |
           dir env:
