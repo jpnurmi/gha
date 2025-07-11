@@ -52,7 +52,7 @@ jobs:
       - name: Install GDK
         run: |
           unzip -q GDK_2504.1.4046.zip -d gdk
-          gdk\PGDK.exe /q
+          gdk\PGDK.exe /features + /q
 
       - run: |
           dir env:
