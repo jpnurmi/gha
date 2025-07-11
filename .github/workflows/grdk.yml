@@ -50,5 +50,8 @@ jobs:
         continue-on-error: true
 
       - run: |
+          Set-ItemProperty -Path 'HKLM:\SOFTWARE\WOW6432Node\Microsoft\GDK' -Name GRDKInstallPath -Value 'C:\Program Files (x86)\Microsoft GDK\'
+
+      - run: |
           cmake -B build -G "Visual Studio 17 2022" -A "Gaming.Desktop.x64" -DCMAKE_TOOLCHAIN_FILE="./toolchains/xbox/grdk_toolchain.cmake" -DGDK_VERSION="250401"
           cmake --build build
