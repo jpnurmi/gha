@@ -52,10 +52,7 @@ jobs:
       - name: Install GDK
         run: |
           unzip -q GDK_2504.1.4046.zip -d gdk
-          gdk\PGDK.exe /features + /q /log gdk.log
-
-      - run: |
-          type gdk.log
+          gdk\PGDK.exe /features + /q /log gdk.log /norestart
 
       - run: |
           dir env:
@@ -67,6 +64,13 @@ jobs:
         continue-on-error: true
 
       - run: |
+          dir "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Platforms"
           dir "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Platforms\Gaming.Desktop.x64"
           dir "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Platforms\Gaming.Desktop.x64\250401"
         continue-on-error: true
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gdk.log
+          path: '*.log'
