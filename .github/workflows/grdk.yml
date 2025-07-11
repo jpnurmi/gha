@@ -51,8 +51,9 @@ jobs:
 
       - name: Install GDK
         run: |
-          unzip -q GDK_2504.1.4046.zip -d gdk
-          gdk\PGDK.exe /features + /q /log gdk.log /norestart
+          Expand-Archive GDK_2504.1.4046.zip -DestinationPath gdk
+          $gdk_installer = Start-Process -FilePath ".\gdk\GDK.exe" -ArgumentList "/quiet", "/norestart" -PassThru
+          $gdk_installer | Wait-Process
 
       - run: |
           dir env:
