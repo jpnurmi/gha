@@ -14,55 +14,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # - name: Cache GDK
-      #   id: cache-gdk
-      #   uses: actions/cache@v4
-      #   with:
-      #     path: |
-      #       "C:/Program Files (x86)/Microsoft GDK/250401"
-      #       "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/MSBuild/Microsoft/VC/v170/Platforms/Gaming.Desktop.x64/250401"
-      #     key: gdk-250401
-
-      # - name: Search GDK
-      #   run: winget search --accept-source-agreements Microsoft.Gaming.GDK
-
-      # - name: Install GDK
-      #   if: steps.cache-gdk.outputs.cache-hit != 'true'
-      #   run: winget install --accept-package-agreements --silent --disable-interactivity --version 2504.1.4046 Microsoft.Gaming.GDK
-
-      - name: Restore GDK
-        id: cache-gdk
-        uses: actions/cache/restore@v4
-        with:
-          path: GDK_2504.1.4046.zip
-          key: gdk-2504.1.4046
-
-      - name: Download GDK
-        if: steps.cache-gdk.outputs.cache-hit != 'true'
-        run: |
-          curl -L -O https://github.com/microsoft/GDK/releases/download/April-2025-Update-1-v2504.1.4046/GDK_2504.1.4046.zip
-
       - name: Cache GDK
-        if: steps.cache-gdk.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v4
+        id: cache-gdk
+        uses: actions/cache@v4
         with:
-          path: GDK_2504.1.4046.zip
-          key: gdk-2504.1.4046
+          path: |
+            C:/Program Files (x86)/Microsoft GDK/250401
+            C:/Program Files/Microsoft Visual Studio/2022/Enterprise/MSBuild/Microsoft/VC/v170/Platforms/Gaming.Desktop.x64/250401
+          key: gdk-250401
 
-      # - name: Install GDK
-      #   run: |
-      #     Expand-Archive GDK_2504.1.4046.zip -DestinationPath gdk
-      #     $gdk_installer = Start-Process -FilePath ".\gdk\PGDK.exe" -ArgumentList "/features", "+", "/quiet", "/norestart" -PassThru
-      #     $gdk_installer | Wait-Process
+      - name: Search GDK
+        run: winget search --accept-source-agreements Microsoft.Gaming.GDK
 
       - name: Install GDK
-        shell: bash
-        run: |
-          unzip -q GDK_2504.1.4046.zip -d gdk
-          tail -F gdk.log 2>/dev/null &
-          TAIL_PID=$!
-          pwsh -NoProfile -Command "& {Start-Process -FilePath './gdk/PGDK.exe' -ArgumentList '/features','+','/quiet','/norestart','/log','gdk.log' -Wait}"
-          kill $TAIL_PID
+        if: steps.cache-gdk.outputs.cache-hit != 'true'
+        run: winget install --accept-package-agreements --silent --disable-interactivity --version 2504.1.4046 Microsoft.Gaming.GDK
 
       - run: |
           dir env:
@@ -78,9 +44,3 @@ jobs:
           dir "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Platforms\Gaming.Desktop.x64"
           dir "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Platforms\Gaming.Desktop.x64\250401"
         continue-on-error: true
-
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: gdk.log
-          path: '*.log'
