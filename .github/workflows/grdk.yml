@@ -37,6 +37,7 @@ jobs:
           dir "C:\Program Files (x86)\Microsoft GDK"
           dir "C:\Program Files (x86)\Microsoft GDK\250401"
           dir "C:\Program Files (x86)\Microsoft GDK\250401\GRDK"
+        continue-on-error: true
 
       - run: |
           dir "C:\Program Files\"
@@ -48,3 +49,4 @@ jobs:
           dir "C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC"
           dir "C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170"
           dir "C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Platforms"
+        continue-on-error: true
