@@ -18,37 +18,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
       
-    - name: Show initial state
-      run: |
-        Write-Host "=== Initial State Check ==="
-        Write-Host "GDK_VERSION: $env:GDK_VERSION"
-        Write-Host "GDK_WINGET_VERSION: $env:GDK_WINGET_VERSION"
-        
-        # Check if paths already exist
-        $gdkPath = "C:\Program Files (x86)\Microsoft GDK\$env:GDK_VERSION"
-        $vsPath = "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Platforms\Gaming.Desktop.x64\$env:GDK_VERSION"
-        
-        Write-Host "Checking pre-existing GDK paths:"
-        Write-Host "  $gdkPath - $(if (Test-Path $gdkPath) { 'EXISTS' } else { 'DOES NOT EXIST' })"
-        Write-Host "  $vsPath - $(if (Test-Path $vsPath) { 'EXISTS' } else { 'DOES NOT EXIST' })"
-        
-        # Check what's in the parent directories
-        Write-Host ""
-        Write-Host "Parent directory contents:"
-        if (Test-Path "C:\Program Files (x86)\Microsoft GDK") {
-          Write-Host "  C:\Program Files (x86)\Microsoft GDK contents:"
-          Get-ChildItem "C:\Program Files (x86)\Microsoft GDK" -ErrorAction SilentlyContinue | ForEach-Object { Write-Host "    $($_.Name)" }
-        } else {
-          Write-Host "  C:\Program Files (x86)\Microsoft GDK - DOES NOT EXIST"
-        }
-        
-        if (Test-Path "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Platforms\Gaming.Desktop.x64") {
-          Write-Host "  VS Gaming.Desktop.x64 contents:"
-          Get-ChildItem "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Platforms\Gaming.Desktop.x64" -ErrorAction SilentlyContinue | ForEach-Object { Write-Host "    $($_.Name)" }
-        } else {
-          Write-Host "  VS Gaming.Desktop.x64 - DOES NOT EXIST"
-        }
-        
     - name: Restore GDK
       id: cache-gdk
       uses: actions/cache/restore@v4
@@ -58,150 +27,48 @@ jobs:
           "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/MSBuild/Microsoft/VC/v170/Platforms/Gaming.Desktop.x64/${{ env.GDK_VERSION }}"
         key: gdk-${{ env.GDK_VERSION }}
         
-    - name: Check cache restore result
-      run: |
-        Write-Host "=== Cache Restore Result ==="
-        Write-Host "Cache hit: ${{ steps.cache-gdk.outputs.cache-hit }}"
-        
-        $gdkPath = "C:\Program Files (x86)\Microsoft GDK\$env:GDK_VERSION"
-        $vsPath = "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Platforms\Gaming.Desktop.x64\$env:GDK_VERSION"
-        
-        Write-Host "After cache restore:"
-        Write-Host "  $gdkPath - $(if (Test-Path $gdkPath) { 'EXISTS' } else { 'DOES NOT EXIST' })"
-        Write-Host "  $vsPath - $(if (Test-Path $vsPath) { 'EXISTS' } else { 'DOES NOT EXIST' })"
-        
     - name: Setup GDK
       if: ${{ steps.cache-gdk.outputs.cache-hit != 'true' }}
       run: |
-        Write-Host "=== Installing GDK ==="
-        Write-Host "Installing Microsoft.Gaming.GDK version $env:GDK_WINGET_VERSION"
-        
-        # Show available versions first
-        Write-Host "Available GDK versions:"
-        winget search Microsoft.Gaming.GDK
-        
-        Write-Host ""
-        Write-Host "Installing..."
         winget install --accept-source-agreements --accept-package-agreements --silent --disable-interactivity --version $env:GDK_WINGET_VERSION Microsoft.Gaming.GDK
         
-        Write-Host "Installation command completed with exit code: $LASTEXITCODE"
-        
-    - name: Verify GDK installation
+    - name: Verify GDK installation paths exist
       run: |
-        Write-Host "=== Post-Installation Verification ==="
-        
         $gdkPath = "C:\Program Files (x86)\Microsoft GDK\$env:GDK_VERSION"
         $vsPath = "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Platforms\Gaming.Desktop.x64\$env:GDK_VERSION"
         
-        Write-Host "Expected paths:"
-        Write-Host "  GDK: $gdkPath"
-        Write-Host "  VS:  $vsPath"
-        Write-Host ""
-        
-        # Check actual installation
-        Write-Host "Checking GDK installation:"
-        if (Test-Path $gdkPath) {
-          Write-Host "  ✓ GDK path exists"
-          Write-Host "  Contents (first 10 items):"
-          Get-ChildItem $gdkPath -Recurse -ErrorAction SilentlyContinue | Select-Object -First 10 | ForEach-Object { Write-Host "    $($_.FullName)" }
-        } else {
-          Write-Host "  ✗ GDK path does not exist"
-          
-          # Check what actually got installed
-          Write-Host "  Checking what's actually in Microsoft GDK folder:"
+        if (-not (Test-Path $gdkPath)) {
+          Write-Host "FAIL: GDK path does not exist: $gdkPath"
+          Write-Host "Available GDK versions:"
           if (Test-Path "C:\Program Files (x86)\Microsoft GDK") {
-            Get-ChildItem "C:\Program Files (x86)\Microsoft GDK" -ErrorAction SilentlyContinue | ForEach-Object { 
-              Write-Host "    Found version: $($_.Name)"
-              if ($_.PSIsContainer) {
-                Write-Host "      Sample contents:"
-                Get-ChildItem $_.FullName -ErrorAction SilentlyContinue | Select-Object -First 3 | ForEach-Object { Write-Host "        $($_.Name)" }
-              }
-            }
+            Get-ChildItem "C:\Program Files (x86)\Microsoft GDK" | ForEach-Object { Write-Host "  $($_.Name)" }
           }
+          exit 1
         }
         
-        Write-Host ""
-        Write-Host "Checking VS installation:"
-        if (Test-Path $vsPath) {
-          Write-Host "  ✓ VS path exists"
-          Write-Host "  Contents:"
-          Get-ChildItem $vsPath -Recurse -ErrorAction SilentlyContinue | ForEach-Object { Write-Host "    $($_.FullName)" }
-        } else {
-          Write-Host "  ✗ VS path does not exist"
-          
-          # Check what's actually there
+        if (-not (Test-Path $vsPath)) {
+          Write-Host "FAIL: VS path does not exist: $vsPath"
+          Write-Host "Available versions in VS Gaming.Desktop.x64:"
           $vsParent = "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Platforms\Gaming.Desktop.x64"
           if (Test-Path $vsParent) {
-            Write-Host "  VS parent directory contents:"
-            Get-ChildItem $vsParent -ErrorAction SilentlyContinue | ForEach-Object { Write-Host "    $($_.Name)" }
+            Get-ChildItem $vsParent | ForEach-Object { Write-Host "  $($_.Name)" }
           } else {
-            Write-Host "  VS parent directory does not exist"
-            
-            # Walk up the path to see what exists
-            $pathParts = @(
-              "C:\Program Files\Microsoft Visual Studio",
-              "C:\Program Files\Microsoft Visual Studio\2022",
-              "C:\Program Files\Microsoft Visual Studio\2022\Enterprise",
-              "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild",
-              "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft",
-              "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC",
-              "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170",
-              "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Platforms"
-            )
-            
-            foreach ($path in $pathParts) {
-              if (Test-Path $path) {
-                Write-Host "    ✓ $path exists"
-                if ($path -eq $pathParts[-1]) {
-                  Write-Host "      Contents:"
-                  Get-ChildItem $path -ErrorAction SilentlyContinue | ForEach-Object { Write-Host "        $($_.Name)" }
-                }
-              } else {
-                Write-Host "    ✗ $path does not exist"
-                break
-              }
-            }
+            Write-Host "VS parent directory does not exist: $vsParent"
           }
+          exit 1
         }
         
-        # Show all installed programs for debugging
-        Write-Host ""
-        Write-Host "Installed programs with 'GDK' in name:"
-        Get-WmiObject -Class Win32_Product | Where-Object { $_.Name -like "*GDK*" } | ForEach-Object { 
-          Write-Host "  $($_.Name) - Version: $($_.Version)"
-        }
+        Write-Host "SUCCESS: Both GDK paths exist"
         
     - name: Cache GDK (save)
-      id: cache-save
       uses: actions/cache/save@v4
       with:
         path: |
           "C:/Program Files (x86)/Microsoft GDK/${{ env.GDK_VERSION }}"
           "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/MSBuild/Microsoft/VC/v170/Platforms/Gaming.Desktop.x64/${{ env.GDK_VERSION }}"
         key: gdk-${{ env.GDK_VERSION }}
-      continue-on-error: true
         
-    - name: Analyze cache save result
+    - name: Verify cache save succeeded
       run: |
-        Write-Host "=== Cache Save Analysis ==="
-        Write-Host "Cache save outcome: ${{ steps.cache-save.outcome }}"
-        
-        if ("${{ steps.cache-save.outcome }}" -eq "success") {
-          Write-Host "✓ Cache save succeeded - GDK caching works!"
-        } else {
-          Write-Host "✗ Cache save failed - this matches your original issue"
-          Write-Host ""
-          Write-Host "This confirms that the exact paths you're trying to cache either:"
-          Write-Host "1. Don't exist at those locations after GDK installation"
-          Write-Host "2. Have permission issues preventing caching"
-          Write-Host "3. Are not created by the winget GDK installation"
-        }
-        
-        # Final verification of paths
-        Write-Host ""
-        Write-Host "Final path verification:"
-        $gdkPath = "C:\Program Files (x86)\Microsoft GDK\$env:GDK_VERSION"
-        $vsPath = "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Platforms\Gaming.Desktop.x64\$env:GDK_VERSION"
-        
-        Write-Host "  $gdkPath - $(if (Test-Path $gdkPath) { 'EXISTS' } else { 'DOES NOT EXIST' })"
-        Write-Host "  $vsPath - $(if (Test-Path $vsPath) { 'EXISTS' } else { 'DOES NOT EXIST' })"
+        Write-Host "SUCCESS: Cache save completed without errors"
+        Write-Host "GDK caching works as expected"
