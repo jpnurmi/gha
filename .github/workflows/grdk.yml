@@ -19,4 +19,4 @@ jobs:
 
     steps:
       - run: winget search --accept-source-agreements Microsoft.Gaming.GDK
-      - run: winget install --accept-package-agreements --version 2504.1.4046 Microsoft.Gaming.GDK
+      - run: winget install --accept-package-agreements --silent --disable-interactivity --version 2504.1.4046 Microsoft.Gaming.GDK
