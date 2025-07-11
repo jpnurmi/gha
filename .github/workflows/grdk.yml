@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          repository: getsentry/sentry-native
+          repository: jpnurmi/sentry-native
           ref: feat/grdk
           submodules: recursive
 
