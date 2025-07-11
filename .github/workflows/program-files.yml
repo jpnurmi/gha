@@ -6,218 +6,202 @@ on:
       - "**/program-files.yml"
   workflow_dispatch:
 
+env:
+  GDK_VERSION: "250401"
+  GDK_WINGET_VERSION: "2504.1.4046"
+
 jobs:
-  test-program-files-caching:
+  test-gdk-caching:
     runs-on: windows-latest
     
     steps:
     - name: Checkout
       uses: actions/checkout@v4
       
-    - name: Create test directories and files
+    - name: Show initial state
       run: |
-        # Create test directories in Program Files
-        Write-Host "Creating test directories..."
-        $testDirs = @(
-          "C:\Program Files\TestApp",
-          "C:\Program Files (x86)\TestApp"
-        )
+        Write-Host "=== Initial State Check ==="
+        Write-Host "GDK_VERSION: $env:GDK_VERSION"
+        Write-Host "GDK_WINGET_VERSION: $env:GDK_WINGET_VERSION"
         
-        foreach ($dir in $testDirs) {
-          New-Item -ItemType Directory -Force -Path $dir
-          
-          # Create some test files
-          "Test content $(Get-Date)" | Out-File -FilePath "$dir\test.txt" -Encoding UTF8
-          "Binary test" | Out-File -FilePath "$dir\test.bin" -Encoding UTF8
-          
-          # Create a subdirectory with files
-          New-Item -ItemType Directory -Force -Path "$dir\subdir"
-          "Subdirectory content" | Out-File -FilePath "$dir\subdir\sub.txt" -Encoding UTF8
+        # Check if paths already exist
+        $gdkPath = "C:\Program Files (x86)\Microsoft GDK\$env:GDK_VERSION"
+        $vsPath = "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Platforms\Gaming.Desktop.x64\$env:GDK_VERSION"
+        
+        Write-Host "Checking pre-existing GDK paths:"
+        Write-Host "  $gdkPath - $(if (Test-Path $gdkPath) { 'EXISTS' } else { 'DOES NOT EXIST' })"
+        Write-Host "  $vsPath - $(if (Test-Path $vsPath) { 'EXISTS' } else { 'DOES NOT EXIST' })"
+        
+        # Check what's in the parent directories
+        Write-Host ""
+        Write-Host "Parent directory contents:"
+        if (Test-Path "C:\Program Files (x86)\Microsoft GDK") {
+          Write-Host "  C:\Program Files (x86)\Microsoft GDK contents:"
+          Get-ChildItem "C:\Program Files (x86)\Microsoft GDK" -ErrorAction SilentlyContinue | ForEach-Object { Write-Host "    $($_.Name)" }
+        } else {
+          Write-Host "  C:\Program Files (x86)\Microsoft GDK - DOES NOT EXIST"
         }
         
-        Write-Host "✓ Test directories created successfully"
+        if (Test-Path "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Platforms\Gaming.Desktop.x64") {
+          Write-Host "  VS Gaming.Desktop.x64 contents:"
+          Get-ChildItem "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Platforms\Gaming.Desktop.x64" -ErrorAction SilentlyContinue | ForEach-Object { Write-Host "    $($_.Name)" }
+        } else {
+          Write-Host "  VS Gaming.Desktop.x64 - DOES NOT EXIST"
+        }
         
-    - name: Verify directories exist and show permissions
+    - name: Restore GDK
+      id: cache-gdk
+      uses: actions/cache/restore@v4
+      with:
+        path: |
+          "C:/Program Files (x86)/Microsoft GDK/${{ env.GDK_VERSION }}"
+          "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/MSBuild/Microsoft/VC/v170/Platforms/Gaming.Desktop.x64/${{ env.GDK_VERSION }}"
+        key: gdk-${{ env.GDK_VERSION }}
+        
+    - name: Check cache restore result
       run: |
-        Write-Host "=== Directory Verification ==="
-        $testDirs = @(
-          "C:\Program Files\TestApp",
-          "C:\Program Files (x86)\TestApp"
-        )
+        Write-Host "=== Cache Restore Result ==="
+        Write-Host "Cache hit: ${{ steps.cache-gdk.outputs.cache-hit }}"
         
-        foreach ($dir in $testDirs) {
-          if (Test-Path $dir) {
-            Write-Host "✓ $dir exists"
-            Write-Host "  Files:"
-            Get-ChildItem $dir -Recurse | ForEach-Object { Write-Host "    $($_.FullName)" }
-            
-            # Check permissions
-            Write-Host "  Permissions:"
-            $acl = Get-Acl $dir
-            $acl.Access | ForEach-Object { 
-              Write-Host "    $($_.IdentityReference): $($_.FileSystemRights) ($($_.AccessControlType))"
+        $gdkPath = "C:\Program Files (x86)\Microsoft GDK\$env:GDK_VERSION"
+        $vsPath = "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Platforms\Gaming.Desktop.x64\$env:GDK_VERSION"
+        
+        Write-Host "After cache restore:"
+        Write-Host "  $gdkPath - $(if (Test-Path $gdkPath) { 'EXISTS' } else { 'DOES NOT EXIST' })"
+        Write-Host "  $vsPath - $(if (Test-Path $vsPath) { 'EXISTS' } else { 'DOES NOT EXIST' })"
+        
+    - name: Setup GDK
+      if: ${{ steps.cache-gdk.outputs.cache-hit != 'true' }}
+      run: |
+        Write-Host "=== Installing GDK ==="
+        Write-Host "Installing Microsoft.Gaming.GDK version $env:GDK_WINGET_VERSION"
+        
+        # Show available versions first
+        Write-Host "Available GDK versions:"
+        winget search Microsoft.Gaming.GDK
+        
+        Write-Host ""
+        Write-Host "Installing..."
+        winget install --accept-source-agreements --accept-package-agreements --silent --disable-interactivity --version $env:GDK_WINGET_VERSION Microsoft.Gaming.GDK
+        
+        Write-Host "Installation command completed with exit code: $LASTEXITCODE"
+        
+    - name: Verify GDK installation
+      run: |
+        Write-Host "=== Post-Installation Verification ==="
+        
+        $gdkPath = "C:\Program Files (x86)\Microsoft GDK\$env:GDK_VERSION"
+        $vsPath = "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Platforms\Gaming.Desktop.x64\$env:GDK_VERSION"
+        
+        Write-Host "Expected paths:"
+        Write-Host "  GDK: $gdkPath"
+        Write-Host "  VS:  $vsPath"
+        Write-Host ""
+        
+        # Check actual installation
+        Write-Host "Checking GDK installation:"
+        if (Test-Path $gdkPath) {
+          Write-Host "  ✓ GDK path exists"
+          Write-Host "  Contents (first 10 items):"
+          Get-ChildItem $gdkPath -Recurse -ErrorAction SilentlyContinue | Select-Object -First 10 | ForEach-Object { Write-Host "    $($_.FullName)" }
+        } else {
+          Write-Host "  ✗ GDK path does not exist"
+          
+          # Check what actually got installed
+          Write-Host "  Checking what's actually in Microsoft GDK folder:"
+          if (Test-Path "C:\Program Files (x86)\Microsoft GDK") {
+            Get-ChildItem "C:\Program Files (x86)\Microsoft GDK" -ErrorAction SilentlyContinue | ForEach-Object { 
+              Write-Host "    Found version: $($_.Name)"
+              if ($_.PSIsContainer) {
+                Write-Host "      Sample contents:"
+                Get-ChildItem $_.FullName -ErrorAction SilentlyContinue | Select-Object -First 3 | ForEach-Object { Write-Host "        $($_.Name)" }
+              }
             }
-          } else {
-            Write-Host "✗ $dir does not exist"
           }
-          Write-Host ""
         }
         
-        Write-Host "Current user: $env:USERNAME"
-        Write-Host "User groups:"
-        whoami /groups /fo csv | ConvertFrom-Csv | ForEach-Object { Write-Host "  $($_.'Group Name')" }
+        Write-Host ""
+        Write-Host "Checking VS installation:"
+        if (Test-Path $vsPath) {
+          Write-Host "  ✓ VS path exists"
+          Write-Host "  Contents:"
+          Get-ChildItem $vsPath -Recurse -ErrorAction SilentlyContinue | ForEach-Object { Write-Host "    $($_.FullName)" }
+        } else {
+          Write-Host "  ✗ VS path does not exist"
+          
+          # Check what's actually there
+          $vsParent = "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Platforms\Gaming.Desktop.x64"
+          if (Test-Path $vsParent) {
+            Write-Host "  VS parent directory contents:"
+            Get-ChildItem $vsParent -ErrorAction SilentlyContinue | ForEach-Object { Write-Host "    $($_.Name)" }
+          } else {
+            Write-Host "  VS parent directory does not exist"
+            
+            # Walk up the path to see what exists
+            $pathParts = @(
+              "C:\Program Files\Microsoft Visual Studio",
+              "C:\Program Files\Microsoft Visual Studio\2022",
+              "C:\Program Files\Microsoft Visual Studio\2022\Enterprise",
+              "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild",
+              "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft",
+              "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC",
+              "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170",
+              "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Platforms"
+            )
+            
+            foreach ($path in $pathParts) {
+              if (Test-Path $path) {
+                Write-Host "    ✓ $path exists"
+                if ($path -eq $pathParts[-1]) {
+                  Write-Host "      Contents:"
+                  Get-ChildItem $path -ErrorAction SilentlyContinue | ForEach-Object { Write-Host "        $($_.Name)" }
+                }
+              } else {
+                Write-Host "    ✗ $path does not exist"
+                break
+              }
+            }
+          }
+        }
         
-    - name: Test cache save
+        # Show all installed programs for debugging
+        Write-Host ""
+        Write-Host "Installed programs with 'GDK' in name:"
+        Get-WmiObject -Class Win32_Product | Where-Object { $_.Name -like "*GDK*" } | ForEach-Object { 
+          Write-Host "  $($_.Name) - Version: $($_.Version)"
+        }
+        
+    - name: Cache GDK (save)
       id: cache-save
       uses: actions/cache/save@v4
       with:
         path: |
-          C:\Program Files\TestApp
-          C:\Program Files (x86)\TestApp
-        key: test-program-files-${{ github.run_id }}
+          "C:/Program Files (x86)/Microsoft GDK/${{ env.GDK_VERSION }}"
+          "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/MSBuild/Microsoft/VC/v170/Platforms/Gaming.Desktop.x64/${{ env.GDK_VERSION }}"
+        key: gdk-${{ env.GDK_VERSION }}
       continue-on-error: true
         
     - name: Analyze cache save result
       run: |
         Write-Host "=== Cache Save Analysis ==="
+        Write-Host "Cache save outcome: ${{ steps.cache-save.outcome }}"
+        
         if ("${{ steps.cache-save.outcome }}" -eq "success") {
-          Write-Host "✓ Cache save succeeded"
+          Write-Host "✓ Cache save succeeded - GDK caching works!"
         } else {
-          Write-Host "✗ Cache save failed"
-          Write-Host "Outcome: ${{ steps.cache-save.outcome }}"
+          Write-Host "✗ Cache save failed - this matches your original issue"
+          Write-Host ""
+          Write-Host "This confirms that the exact paths you're trying to cache either:"
+          Write-Host "1. Don't exist at those locations after GDK installation"
+          Write-Host "2. Have permission issues preventing caching"
+          Write-Host "3. Are not created by the winget GDK installation"
         }
         
-    - name: Remove test directories
-      if: always()
-      run: |
-        Write-Host "=== Cleanup ==="
-        $testDirs = @(
-          "C:\Program Files\TestApp",
-          "C:\Program Files (x86)\TestApp"
-        )
+        # Final verification of paths
+        Write-Host ""
+        Write-Host "Final path verification:"
+        $gdkPath = "C:\Program Files (x86)\Microsoft GDK\$env:GDK_VERSION"
+        $vsPath = "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Platforms\Gaming.Desktop.x64\$env:GDK_VERSION"
         
-        foreach ($dir in $testDirs) {
-          if (Test-Path $dir) {
-            try {
-              Remove-Item $dir -Recurse -Force
-              Write-Host "✓ Removed $dir"
-            } catch {
-              Write-Host "✗ Failed to remove $dir`: $($_.Exception.Message)"
-            }
-          }
-        }
-        
-    - name: Test cache restore (if save succeeded)
-      if: steps.cache-save.outcome == 'success'
-      uses: actions/cache/restore@v4
-      with:
-        path: |
-          C:\Program Files\TestApp
-          C:\Program Files (x86)\TestApp
-        key: test-program-files-${{ github.run_id }}
-        
-    - name: Verify cache restore (if save succeeded)
-      if: steps.cache-save.outcome == 'success'
-      run: |
-        Write-Host "=== Cache Restore Verification ==="
-        $testDirs = @(
-          "C:\Program Files\TestApp",
-          "C:\Program Files (x86)\TestApp"
-        )
-        
-        foreach ($dir in $testDirs) {
-          if (Test-Path $dir) {
-            Write-Host "✓ $dir restored successfully"
-            Write-Host "  Restored files:"
-            Get-ChildItem $dir -Recurse | ForEach-Object { Write-Host "    $($_.FullName)" }
-          } else {
-            Write-Host "✗ $dir was not restored"
-          }
-        }
-        
-    - name: Final cleanup
-      if: always()
-      run: |
-        Write-Host "=== Final Cleanup ==="
-        $testDirs = @(
-          "C:\Program Files\TestApp",
-          "C:\Program Files (x86)\TestApp"
-        )
-        
-        foreach ($dir in $testDirs) {
-          if (Test-Path $dir) {
-            try {
-              Remove-Item $dir -Recurse -Force -ErrorAction SilentlyContinue
-              Write-Host "✓ Final cleanup of $dir"
-            } catch {
-              Write-Host "Note: Could not clean up $dir (this is expected)"
-            }
-          }
-        }
-        
-  test-alternative-approach:
-    runs-on: windows-latest
-    
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-      
-    - name: Test alternative - copy to workspace then cache
-      run: |
-        Write-Host "=== Alternative Approach Test ==="
-        
-        # Create test content in Program Files
-        New-Item -ItemType Directory -Force -Path "C:\Program Files\TestApp2"
-        "Alternative test content $(Get-Date)" | Out-File -FilePath "C:\Program Files\TestApp2\test.txt" -Encoding UTF8
-        
-        # Copy to workspace
-        New-Item -ItemType Directory -Force -Path "cached-program-files"
-        Copy-Item "C:\Program Files\TestApp2" "cached-program-files\" -Recurse -Force
-        
-        Write-Host "✓ Copied Program Files content to workspace"
-        
-    - name: Cache workspace copy
-      uses: actions/cache/save@v4
-      with:
-        path: cached-program-files
-        key: test-workspace-copy-${{ github.run_id }}
-        
-    - name: Test workspace cache restore
-      run: |
-        Write-Host "=== Testing Workspace Cache Restore ==="
-        
-        # Remove original and workspace copy
-        Remove-Item "C:\Program Files\TestApp2" -Recurse -Force -ErrorAction SilentlyContinue
-        Remove-Item "cached-program-files" -Recurse -Force -ErrorAction SilentlyContinue
-        
-        Write-Host "✓ Cleaned up original files"
-        
-    - name: Restore from workspace cache
-      uses: actions/cache/restore@v4
-      with:
-        path: cached-program-files
-        key: test-workspace-copy-${{ github.run_id }}
-        
-    - name: Copy back to Program Files
-      run: |
-        Write-Host "=== Copying Back to Program Files ==="
-        
-        if (Test-Path "cached-program-files\TestApp2") {
-          Copy-Item "cached-program-files\TestApp2" "C:\Program Files\" -Recurse -Force
-          Write-Host "✓ Successfully copied back to Program Files"
-          
-          # Verify
-          if (Test-Path "C:\Program Files\TestApp2\test.txt") {
-            $content = Get-Content "C:\Program Files\TestApp2\test.txt"
-            Write-Host "✓ Restored content: $content"
-          }
-        } else {
-          Write-Host "✗ Cached content not found"
-        }
-        
-    - name: Final cleanup alternative test
-      if: always()
-      run: |
-        Remove-Item "C:\Program Files\TestApp2" -Recurse -Force -ErrorAction SilentlyContinue
-        Remove-Item "cached-program-files" -Recurse -Force -ErrorAction SilentlyContinue
-        Write-Host "✓ Alternative test cleanup complete"
+        Write-Host "  $gdkPath - $(if (Test-Path $gdkPath) { 'EXISTS' } else { 'DOES NOT EXIST' })"
+        Write-Host "  $vsPath - $(if (Test-Path $vsPath) { 'EXISTS' } else { 'DOES NOT EXIST' })"
