@@ -25,6 +25,7 @@ jobs:
           "C:/Program Files (x86)/Microsoft GDK/${{ env.GDK_VERSION }}"
           "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/MSBuild/Microsoft/VC/v170/Platforms/Gaming.Desktop.x64/${{ env.GDK_VERSION }}"
         key: gdk-${{ env.GDK_VERSION }}
+        enableCrossOsArchive: true
         
     - name: Mock GDK installation
       if: ${{ steps.cache-gdk.outputs.cache-hit != 'true' }}
@@ -79,6 +80,7 @@ jobs:
           "C:/Program Files (x86)/Microsoft GDK/${{ env.GDK_VERSION }}"
           "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/MSBuild/Microsoft/VC/v170/Platforms/Gaming.Desktop.x64/${{ env.GDK_VERSION }}"
         key: gdk-${{ env.GDK_VERSION }}
+        enableCrossOsArchive: true
         
     - name: Verify cache save succeeded
       run: |
@@ -98,6 +100,7 @@ jobs:
           "C:/Program Files (x86)/Microsoft GDK/${{ env.GDK_VERSION }}"
           "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/MSBuild/Microsoft/VC/v170/Platforms/Gaming.Desktop.x64/${{ env.GDK_VERSION }}"
         key: gdk-${{ env.GDK_VERSION }}
+        enableCrossOsArchive: true
         
     - name: Verify cache restore worked
       run: |
