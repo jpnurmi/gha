@@ -8,15 +8,16 @@ on:
 
 jobs:
   grdk:
-    name: GRDK (${{ matrix.container || matrix.os }})
-    runs-on: ${{ matrix.os }}
-    container: ${{ matrix.container }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: windows-2025
+    name: GRDK
+    runs-on: windows-2025
 
     steps:
       - run: winget search --accept-source-agreements Microsoft.Gaming.GDK
+
       - run: winget install --accept-package-agreements --silent --disable-interactivity --version 2504.1.4046 Microsoft.Gaming.GDK
+
+      - run: |
+          dir "C:\Program Files (x86)\Microsoft GDK\250401\GRDK"
+
+      - run: |
+          dir "C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Platforms"
