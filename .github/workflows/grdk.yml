@@ -31,7 +31,20 @@ jobs:
         run: winget install --accept-package-agreements --silent --disable-interactivity --version 2504.1.4046 Microsoft.Gaming.GDK
 
       - run: |
+          dir env:
+
+      - run: |
+          dir "C:\Program Files (x86)\Microsoft GDK"
+          dir "C:\Program Files (x86)\Microsoft GDK\250401"
           dir "C:\Program Files (x86)\Microsoft GDK\250401\GRDK"
 
       - run: |
+          dir "C:\Program Files\"
+          dir "C:\Program Files\Microsoft Visual Studio"
+          dir "C:\Program Files\Microsoft Visual Studio\2022"
+          dir "C:\Program Files\Microsoft Visual Studio\2022\Community"
+          dir "C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild"
+          dir "C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft"
+          dir "C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC"
+          dir "C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170"
           dir "C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Platforms"
