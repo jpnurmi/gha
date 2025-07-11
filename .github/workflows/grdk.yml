@@ -18,25 +18,5 @@ jobs:
           - os: windows-latest
 
     steps:
-      - run: |
-          dir env:
-        shell: pwsh
-
-      # - shell: pwsh
-      #   run: |
-      #     nuget.exe install Microsoft.GDK.PC -Version 2504.1.4046 -OutputDirectory packages
-
-      # - shell: pwsh
-      #   run: tree /F /A C:\Users\runneradmin\.nuget\packages\microsoft.gdk.pc
-
-      # - shell: pwsh
-      #   run: tree /F /A ${{ github.workspace }}\packages
-
-      # - shell: pwsh
-      #   run: Get-ChildItem -Recurse -Path C:\Users\runneradmin\.nuget\packages\microsoft.gdk.pc -Include *.cmd -File
-
-      - shell: pwsh
-        run: Get-ChildItem -Recurse -Path C:\ -Include *.cmd -File
-
-      - shell: pwsh
-        run: Get-ChildItem -Recurse -Path D:\ -Include *.cmd -File
+      - run: winget search Microsoft.Gaming.GDK
+      - run: winget install -v 2504.1.4046 Microsoft.Gaming.GDK
