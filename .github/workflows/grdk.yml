@@ -20,7 +20,7 @@ jobs:
         with:
           path: |
             "C:\Program Files (x86)\Microsoft GDK\250401\GRDK"
-            "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Platforms"
+            "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Platforms\Gaming.Desktop.x64\250401"
           key: gdk-250401
 
       - name: Search GDK
@@ -34,30 +34,9 @@ jobs:
           dir env:
 
       - run: |
-          dir "C:\Program Files (x86)\Microsoft GDK"
-          dir "C:\Program Files (x86)\Microsoft GDK\250401"
           dir "C:\Program Files (x86)\Microsoft GDK\250401\GRDK"
         continue-on-error: true
 
       - run: |
-          dir "C:\Program Files\"
-          dir "C:\Program Files\Microsoft Visual Studio"
-          dir "C:\Program Files\Microsoft Visual Studio\2022"
-
-      - run: |
-          dir "C:\Program Files\Microsoft Visual Studio\2022\Enterprise"
-          dir "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild"
-          dir "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft"
-          dir "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC"
-          dir "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170"
-          dir "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Platforms"
-        continue-on-error: true
-
-      - run: |
-          dir "C:\Program Files\Microsoft Visual Studio\2022\Community"
-          dir "C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild"
-          dir "C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft"
-          dir "C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC"
-          dir "C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170"
-          dir "C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Platforms"
+          dir "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Platforms\Gaming.Desktop.x64\250401"
         continue-on-error: true
