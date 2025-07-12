@@ -39,20 +39,20 @@ jobs:
         if: steps.cache-gdk.outputs.cache-hit != 'true'
         run: winget install --accept-source-agreements --accept-package-agreements --silent --disable-interactivity --version 2504.1.4046 Microsoft.Gaming.GDK
 
-      - name: Ensure GDK registry keys exist (only if not cached)
-        if: steps.cache-reg.outputs.cache-hit != 'true'
-        run: |
-          $gdk = 'HKLM:\SOFTWARE\WOW6432Node\Microsoft\GDK'
-          if (-not (Test-Path $gdk)) {
-            New-Item -Path $gdk -Force | Out-Null
-          }
-          Set-ItemProperty -Path $gdk -Name GRDKInstallPath -Value 'C:\Program Files (x86)\Microsoft GDK\'
+      # - name: Ensure GDK registry keys exist (only if not cached)
+      #   if: steps.cache-reg.outputs.cache-hit != 'true'
+      #   run: |
+      #     $gdk = 'HKLM:\SOFTWARE\WOW6432Node\Microsoft\GDK'
+      #     if (-not (Test-Path $gdk)) {
+      #       New-Item -Path $gdk -Force | Out-Null
+      #     }
+      #     Set-ItemProperty -Path $gdk -Name GRDKInstallPath -Value 'C:\Program Files (x86)\Microsoft GDK\'
 
-          $grdk = 'HKLM:\SOFTWARE\WOW6432Node\Microsoft\GDK\250401\GRDK'
-          if (-not (Test-Path $grdk)) {
-            New-Item -Path $grdk -Force | Out-Null
-          }
-          Set-ItemProperty -Path $grdk -Name InstallPath -Value 'C:\Program Files (x86)\Microsoft GDK\250401\GRDK\'
+      #     $grdk = 'HKLM:\SOFTWARE\WOW6432Node\Microsoft\GDK\250401\GRDK'
+      #     if (-not (Test-Path $grdk)) {
+      #       New-Item -Path $grdk -Force | Out-Null
+      #     }
+      #     Set-ItemProperty -Path $grdk -Name InstallPath -Value 'C:\Program Files (x86)\Microsoft GDK\250401\GRDK\'
 
       - name: Export GDK registry for caching (if not already cached)
         if: steps.cache-reg.outputs.cache-hit != 'true'
