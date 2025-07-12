@@ -12,7 +12,7 @@ jobs:
     runs-on: windows-2025
 
     steps:
-      - name: Cache GDK
+      - name: Cache GDK files
         id: cache-gdk
         uses: actions/cache@v4
         with:
@@ -21,11 +21,27 @@ jobs:
             C:/Program Files/Microsoft Visual Studio/2022/Enterprise/MSBuild/Microsoft/VC/v170/Platforms/Gaming.Desktop.x64
           key: gdk-250401
 
+      - name: Cache GDK registry export
+        id: cache-reg
+        uses: actions/cache@v4
+        with:
+          path: gdk.reg
+          key: gdk-registry-250401
+
+      - name: Restore GDK registry (if cached)
+        if: steps.cache-reg.outputs.cache-hit == 'true'
+        run: |
+          if (Test-Path gdk.reg) {
+            reg import gdk.reg
+          }
+
       - name: Install GDK
         if: steps.cache-gdk.outputs.cache-hit != 'true'
         run: winget install --accept-source-agreements --accept-package-agreements --silent --disable-interactivity --version 2504.1.4046 Microsoft.Gaming.GDK
 
-      - run: |
+      - name: Ensure GDK registry keys exist (only if not cached)
+        if: steps.cache-reg.outputs.cache-hit != 'true'
+        run: |
           $gdk = 'HKLM:\SOFTWARE\WOW6432Node\Microsoft\GDK'
           if (-not (Test-Path $gdk)) {
             New-Item -Path $gdk -Force | Out-Null
@@ -37,6 +53,11 @@ jobs:
             New-Item -Path $grdk -Force | Out-Null
           }
           Set-ItemProperty -Path $grdk -Name InstallPath -Value 'C:\Program Files (x86)\Microsoft GDK\250401\GRDK\'
+
+      - name: Export GDK registry for caching (if not already cached)
+        if: steps.cache-reg.outputs.cache-hit != 'true'
+        run: |
+          reg export "HKLM\SOFTWARE\WOW6432Node\Microsoft\GDK" gdk.reg
 
       - name: Env before
         run: |
