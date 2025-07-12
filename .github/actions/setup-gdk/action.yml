@@ -9,8 +9,8 @@ runs:
   using: composite
   steps:
     - name: Cache GDK directory
-      uses: actions/cache@v4
       id: cache-gdk-directory
+      uses: actions/cache@v4
       with:
         path: |
           C:/Program Files (x86)/Microsoft GDK
@@ -18,26 +18,26 @@ runs:
         key: setup-gdk-directory-${{ inputs.gdk-version }}
 
     - name: Cache GDK registry
-      uses: actions/cache@v4
       id: cache-gdk-registry
+      uses: actions/cache@v4
       with:
         path: ${{ runner.temp }}/gdk.reg
         key: setup-gdk-registry-${{ inputs.gdk-version }}
 
     - name: Install GDK
       shell: pwsh
-      if: ${{ steps.cache-gdk-dir.outputs.cache-hit != 'true' }}
+      if: ${{ steps.cache-gdk-directory.outputs.cache-hit != 'true' }}
       run: |
         winget install --accept-source-agreements --accept-package-agreements --silent --disable-interactivity --version ${{ inputs.gdk-version }} Microsoft.Gaming.GDK
 
     - name: Import GDK registry
       shell: pwsh
-      if: ${{ steps.cache-gdk-dir.outputs.cache-hit == 'true' }}
+      if: ${{ steps.cache-gdk-registry.outputs.cache-hit == 'true' }}
       run: |
         reg import "$env:RUNNER_TEMP\gdk.reg"
 
     - name: Export GDK registry
       shell: pwsh
-      if: ${{ steps.cache-gdk-dir.outputs.cache-hit != 'true' }}
+      if: ${{ steps.cache-gdk-registry.outputs.cache-hit != 'true' }}
       run: |
         reg export "HKLM\SOFTWARE\WOW6432Node\Microsoft\GDK" "$env:RUNNER_TEMP\gdk.reg"
