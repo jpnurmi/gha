@@ -14,10 +14,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          repository: getsentry/sentry-native
-          ref: feat/grdk
-          submodules: recursive
 
       - name: Setup GDK
         uses: ./.github/actions/setup-gdk
@@ -52,7 +48,15 @@ jobs:
       #       reg export "HKLM\SOFTWARE\WOW6432Node\Microsoft\GDK" gdk.reg
       #     }
 
+      - uses: actions/checkout@v4
+        with:
+          repository: getsentry/sentry-native
+          ref: feat/grdk
+          submodules: recursive
+          path: sentry-native
+
       - name: Build
         run: |
           cmake -B build -G "Visual Studio 17 2022" -A "Gaming.Desktop.x64" -DCMAKE_TOOLCHAIN_FILE="./toolchains/xbox/grdk_toolchain.cmake" -DGDK_VERSION="250401"
           cmake --build build
+        working-directory: sentry-native
