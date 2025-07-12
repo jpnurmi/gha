@@ -12,6 +12,12 @@ jobs:
     runs-on: windows-2025
 
     steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: getsentry/sentry-native
+          ref: feat/grdk
+          submodules: recursive
+
       - name: Cache GDK files
         id: cache-gdk
         uses: actions/cache@v4
@@ -60,19 +66,15 @@ jobs:
           reg export "HKLM\SOFTWARE\WOW6432Node\Microsoft\GDK" gdk.reg
 
       - name: Env before
+        shell: cmd
         run: |
-          dir env:
+          set
 
       - name: GamingDesktopVS2022
+        shell: cmd
         run: |
-          cmd.exe /k "C:\Program Files (x86)\Microsoft GDK\Command Prompts\GamingDesktopVars.cmd" GamingDesktopVS2022 250401
-          dir env:
-
-      - uses: actions/checkout@v4
-        with:
-          repository: getsentry/sentry-native
-          ref: feat/grdk
-          submodules: recursive
+          "C:\Program Files (x86)\Microsoft GDK\Command Prompts\GamingDesktopVars.cmd" GamingDesktopVS2022 250401
+          set
 
       - run: |
           cmake -B build -G "Visual Studio 17 2022" -A "Gaming.Desktop.x64" -DCMAKE_TOOLCHAIN_FILE="./toolchains/xbox/grdk_toolchain.cmake" -DGDK_VERSION="250401"
