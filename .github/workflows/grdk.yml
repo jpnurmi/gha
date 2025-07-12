@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - '**/grdk.yml'
+      - '**/setup-gdk/action.yml'
   workflow_dispatch:
 
 jobs:
@@ -18,45 +19,38 @@ jobs:
           ref: feat/grdk
           submodules: recursive
 
-      - name: Cache GDK dir
-        id: cache-gdk-dir
-        uses: actions/cache@v4
+      - name: Setup GDK
+        uses: ./.github/actions/setup-gdk
         with:
-          path: |
-            C:/Program Files (x86)/Microsoft GDK
-            C:/Program Files/Microsoft Visual Studio/2022/Enterprise/MSBuild/Microsoft/VC/v170/Platforms/Gaming.Desktop.x64
-          key: setup-gdk-dir-250401
+          gdk-version: 2504.1.4046
 
-      - name: Cache GDK registry
-        id: cache-gdk-registry
-        uses: actions/cache@v4
-        with:
-          path: gdk.reg
-          key: setup-gdk-registry-250401
+      # - name: Cache GDK dir
+      #   id: cache-gdk-dir
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: |
+      #       C:/Program Files (x86)/Microsoft GDK
+      #       C:/Program Files/Microsoft Visual Studio/2022/Enterprise/MSBuild/Microsoft/VC/v170/Platforms/Gaming.Desktop.x64
+      #     key: setup-gdk-dir-250401
 
-      - name: Install GDK dir
-        if: steps.cache-gdk-dir.outputs.cache-hit != 'true'
-        run: winget install --accept-source-agreements --accept-package-agreements --silent --disable-interactivity --version 2504.1.4046 Microsoft.Gaming.GDK
+      # - name: Cache GDK registry
+      #   id: cache-gdk-registry
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: gdk.reg
+      #     key: setup-gdk-registry-250401
 
-      - name: Setup GDK registry
-        run: |
-          if ("${{ steps.cache-gdk-registry.outputs.cache-hit }}" -eq "true") {
-            reg import gdk.reg
-          } else {
-            reg export "HKLM\SOFTWARE\WOW6432Node\Microsoft\GDK" gdk.reg
-          }
+      # - name: Install GDK dir
+      #   if: steps.cache-gdk-dir.outputs.cache-hit != 'true'
+      #   run: winget install --accept-source-agreements --accept-package-agreements --silent --disable-interactivity --version 2504.1.4046 Microsoft.Gaming.GDK
 
-      # - name: Import GDK registry
-      #   if: steps.cache-gdk-registry.outputs.cache-hit == 'true'
+      # - name: Setup GDK registry
       #   run: |
-      #     if (Test-Path gdk.reg) {
+      #     if ("${{ steps.cache-gdk-registry.outputs.cache-hit }}" -eq "true") {
       #       reg import gdk.reg
+      #     } else {
+      #       reg export "HKLM\SOFTWARE\WOW6432Node\Microsoft\GDK" gdk.reg
       #     }
-
-      # - name: Export GDK registry
-      #   if: steps.cache-gdk-registry.outputs.cache-hit != 'true'
-      #   run: |
-      #     reg export "HKLM\SOFTWARE\WOW6432Node\Microsoft\GDK" gdk.reg
 
       - name: Build
         run: |
