@@ -14,49 +14,18 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
-      - name: Setup GDK
-        uses: ./.github/actions/setup-gdk
-        with:
-          gdk-version: 2504.1.4046
-
-      # - name: Cache GDK dir
-      #   id: cache-gdk-dir
-      #   uses: actions/cache@v4
-      #   with:
-      #     path: |
-      #       C:/Program Files (x86)/Microsoft GDK
-      #       C:/Program Files/Microsoft Visual Studio/2022/Enterprise/MSBuild/Microsoft/VC/v170/Platforms/Gaming.Desktop.x64
-      #     key: setup-gdk-dir-250401
-
-      # - name: Cache GDK registry
-      #   id: cache-gdk-registry
-      #   uses: actions/cache@v4
-      #   with:
-      #     path: gdk.reg
-      #     key: setup-gdk-registry-250401
-
-      # - name: Install GDK dir
-      #   if: steps.cache-gdk-dir.outputs.cache-hit != 'true'
-      #   run: winget install --accept-source-agreements --accept-package-agreements --silent --disable-interactivity --version 2504.1.4046 Microsoft.Gaming.GDK
-
-      # - name: Setup GDK registry
-      #   run: |
-      #     if ("${{ steps.cache-gdk-registry.outputs.cache-hit }}" -eq "true") {
-      #       reg import gdk.reg
-      #     } else {
-      #       reg export "HKLM\SOFTWARE\WOW6432Node\Microsoft\GDK" gdk.reg
-      #     }
-
-      - uses: actions/checkout@v4
         with:
           repository: getsentry/sentry-native
           ref: feat/grdk
           submodules: recursive
-          path: sentry-native
+
+      - name: Setup GDK
+        # uses: ./.github/actions/setup-gdk
+        uses: jpnurmi/gha/.github/actions/setup-gdk@main
+        with:
+          gdk-version: 2504.1.4046
 
       - name: Build
         run: |
           cmake -B build -G "Visual Studio 17 2022" -A "Gaming.Desktop.x64" -DCMAKE_TOOLCHAIN_FILE="./toolchains/xbox/grdk_toolchain.cmake" -DGDK_VERSION="250401"
           cmake --build build
-        working-directory: sentry-native
