@@ -31,18 +31,24 @@ jobs:
         if: steps.cache-gdk.outputs.cache-hit != 'true'
         run: winget install --accept-source-agreements --accept-package-agreements --silent --disable-interactivity --version 2504.1.4046 Microsoft.Gaming.GDK
 
-      - name: GamingDesktopVS2022
-        run: |
-          dir env:
-          cmd.exe /k "C:\Program Files (x86)\Microsoft GDK\Command Prompts\GamingDesktopVars.cmd" GamingDesktopVS2022
-          dir env:
-
       - run: |
           $path = 'HKLM:\SOFTWARE\WOW6432Node\Microsoft\GDK'
           if (-not (Test-Path $path)) {
             New-Item -Path $path -Force | Out-Null
           }
           Set-ItemProperty -Path $path -Name GRDKInstallPath -Value 'C:\Program Files (x86)\Microsoft GDK\'
+
+      - name: Env before
+        run: |
+          dir env:
+
+      - name: GamingDesktopVS2022
+        run: |
+          cmd.exe /k "C:\Program Files (x86)\Microsoft GDK\Command Prompts\GamingDesktopVars.cmd" GamingDesktopVS2022
+
+      - name: Env after
+        run: |
+          dir env:
 
       - run: |
           cmake -B build -G "Visual Studio 17 2022" -A "Gaming.Desktop.x64" -DCMAKE_TOOLCHAIN_FILE="./toolchains/xbox/grdk_toolchain.cmake" -DGDK_VERSION="250401"
