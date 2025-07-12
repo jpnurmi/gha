@@ -43,7 +43,6 @@ jobs:
           dir env:
 
       - name: GamingDesktopVS2022
-        shell: cmd
         run: |
           cmd.exe /k "C:\Program Files (x86)\Microsoft GDK\Command Prompts\GamingDesktopVars.cmd" GamingDesktopVS2022 250401
           dir env:
