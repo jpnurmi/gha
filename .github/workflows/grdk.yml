@@ -18,64 +18,47 @@ jobs:
           ref: feat/grdk
           submodules: recursive
 
-      - name: Cache GDK files
-        id: cache-gdk
+      - name: Cache GDK dir
+        id: cache-gdk-dir
         uses: actions/cache@v4
         with:
           path: |
             C:/Program Files (x86)/Microsoft GDK
             C:/Program Files/Microsoft Visual Studio/2022/Enterprise/MSBuild/Microsoft/VC/v170/Platforms/Gaming.Desktop.x64
-          key: gdk-250401
+          key: setup-gdk-dir-250401
 
-      - name: Cache GDK registry export
-        id: cache-reg
+      - name: Cache GDK registry
+        id: cache-gdk-registry
         uses: actions/cache@v4
         with:
           path: gdk.reg
-          key: gdk-registry-250401
+          key: setup-gdk-registry-250401
 
-      - name: Restore GDK registry (if cached)
-        if: steps.cache-reg.outputs.cache-hit == 'true'
-        run: |
-          if (Test-Path gdk.reg) {
-            reg import gdk.reg
-          }
-
-      - name: Install GDK
-        if: steps.cache-gdk.outputs.cache-hit != 'true'
+      - name: Install GDK dir
+        if: steps.cache-gdk-dir.outputs.cache-hit != 'true'
         run: winget install --accept-source-agreements --accept-package-agreements --silent --disable-interactivity --version 2504.1.4046 Microsoft.Gaming.GDK
 
-      # - name: Ensure GDK registry keys exist (only if not cached)
-      #   if: steps.cache-reg.outputs.cache-hit != 'true'
-      #   run: |
-      #     $gdk = 'HKLM:\SOFTWARE\WOW6432Node\Microsoft\GDK'
-      #     if (-not (Test-Path $gdk)) {
-      #       New-Item -Path $gdk -Force | Out-Null
-      #     }
-      #     Set-ItemProperty -Path $gdk -Name GRDKInstallPath -Value 'C:\Program Files (x86)\Microsoft GDK\'
-
-      #     $grdk = 'HKLM:\SOFTWARE\WOW6432Node\Microsoft\GDK\250401\GRDK'
-      #     if (-not (Test-Path $grdk)) {
-      #       New-Item -Path $grdk -Force | Out-Null
-      #     }
-      #     Set-ItemProperty -Path $grdk -Name InstallPath -Value 'C:\Program Files (x86)\Microsoft GDK\250401\GRDK\'
-
-      - name: Export GDK registry for caching (if not already cached)
-        if: steps.cache-reg.outputs.cache-hit != 'true'
+      - name: Setup GDK registry
         run: |
-          reg export "HKLM\SOFTWARE\WOW6432Node\Microsoft\GDK" gdk.reg
+          if ("${{ steps.cache-gdk-registry.outputs.cache-hit }}" -eq "true") {
+            reg import gdk.reg
+          } else {
+            reg export "HKLM\SOFTWARE\WOW6432Node\Microsoft\GDK" gdk.reg
+          }
 
-      # - name: Env before
-      #   shell: cmd
+      # - name: Import GDK registry
+      #   if: steps.cache-gdk-registry.outputs.cache-hit == 'true'
       #   run: |
-      #     set
+      #     if (Test-Path gdk.reg) {
+      #       reg import gdk.reg
+      #     }
 
-      # - name: GamingDesktopVS2022
-      #   shell: cmd
+      # - name: Export GDK registry
+      #   if: steps.cache-gdk-registry.outputs.cache-hit != 'true'
       #   run: |
-      #     "C:\Program Files (x86)\Microsoft GDK\Command Prompts\GamingDesktopVars.cmd" GamingDesktopVS2022 250401
-      #     set
+      #     reg export "HKLM\SOFTWARE\WOW6432Node\Microsoft\GDK" gdk.reg
 
-      - run: |
+      - name: Build
+        run: |
           cmake -B build -G "Visual Studio 17 2022" -A "Gaming.Desktop.x64" -DCMAKE_TOOLCHAIN_FILE="./toolchains/xbox/grdk_toolchain.cmake" -DGDK_VERSION="250401"
           cmake --build build
