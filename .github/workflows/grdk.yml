@@ -44,7 +44,7 @@ jobs:
 
       - name: GamingDesktopVS2022
         run: |
-          cmd.exe /k "C:\Program Files (x86)\Microsoft GDK\Command Prompts\GamingDesktopVars.cmd" GamingDesktopVS2022
+          cmd.exe /k "C:\Program Files (x86)\Microsoft GDK\Command Prompts\GamingDesktopVars.cmd" GamingDesktopVS2022 250401
 
       - name: Env after
         run: |
