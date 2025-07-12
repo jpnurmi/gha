@@ -31,6 +31,12 @@ jobs:
         if: steps.cache-gdk.outputs.cache-hit != 'true'
         run: winget install --accept-source-agreements --accept-package-agreements --silent --disable-interactivity --version 2504.1.4046 Microsoft.Gaming.GDK
 
+      - name: GamingDesktopVS2022
+        run: |
+          dir env:
+          cmd.exe /k "C:\Program Files (x86)\Microsoft GDK\Command Prompts\GamingDesktopVars.cmd" GamingDesktopVS2022
+          dir env:
+
       - run: |
           $path = 'HKLM:\SOFTWARE\WOW6432Node\Microsoft\GDK'
           if (-not (Test-Path $path)) {
