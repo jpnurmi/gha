@@ -18,7 +18,7 @@ runs:
           ${{ runner.temp }}/gdk.reg
         key: setup-gdk-${{ inputs.gdk-version }}
 
-    - name: Import registry
+    - name: Setup GDK
       if: ${{ steps.cache-gdk.outputs.cache-hit == 'true' }}
       shell: pwsh
       run: |
@@ -29,11 +29,6 @@ runs:
       shell: pwsh
       run: |
         winget install --accept-source-agreements --accept-package-agreements --silent --disable-interactivity --version ${{ inputs.gdk-version }} Microsoft.Gaming.GDK
-
-    - name: Export registry
-      if: ${{ steps.cache-gdk.outputs.cache-hit != 'true' }}
-      shell: pwsh
-      run: |
         reg export "HKLM\SOFTWARE\WOW6432Node\Microsoft\GDK" "$env:RUNNER_TEMP\gdk.reg"
 
     - name: Cache GDK
