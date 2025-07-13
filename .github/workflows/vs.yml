@@ -1,0 +1,23 @@
+name: VS
+
+on:
+  push:
+    paths:
+      - '**/vs.yml'
+  workflow_dispatch:
+
+jobs:
+  env:
+    name: VS
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+          - os: windows-2025
+
+    steps:
+      - run: |
+          $vsPath = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -property installationPath
+          echo "VS installation path: $vsPath"
