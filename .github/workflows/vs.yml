@@ -21,3 +21,6 @@ jobs:
       - run: |
           $vsPath = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -property installationPath
           echo "VS installation path: $vsPath"
+          dir $vsPath
+          dir "$vsPath\MSBuild\Microsoft\VC"
+          dir "$vsPath\MSBuild\Microsoft\VC\v170\Platforms"
