@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Linux (${{ matrix.os }}, ${{ matrix.container }})
+    name: Linux (${{ matrix.os }}, ${{ matrix.container.image }})
     runs-on: ${{ matrix.os }}
     container: ${{ matrix.container }}
     strategy:
@@ -26,11 +26,11 @@ jobs:
           - os: ubuntu-24.04-arm
             container:
               image: ghcr.io/jpnurmi/alpine:3.21
-              volumes: [/usr:/__e/node20]
+              volumes: [/dev/null:/__e/node20]
           - os: ubuntu-24.04-arm
             container:
               image: ghcr.io/jpnurmi/alpine:3.22
-              volumes: [/usr:/__e/node20]
+              volumes: [/dev/null:/__e/node20]
 
     steps:
       - run: |
