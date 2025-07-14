@@ -27,10 +27,12 @@ jobs:
             container:
               image: ghcr.io/jpnurmi/alpine:3.21
               volumes: [/opt/node:/__e/node20]
+              entrypoint: ["/entrypoint.sh"]
           - os: ubuntu-24.04-arm
             container:
               image: ghcr.io/jpnurmi/alpine:3.22
               volumes: [/opt/node:/__e/node20]
+              entrypoint: ["/entrypoint.sh"]
 
     steps:
       - run: |
