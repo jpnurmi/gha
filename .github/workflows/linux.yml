@@ -38,4 +38,12 @@ jobs:
       - run: |
           sudo sed -i 's/ID=alpine/ID=unknown/' /etc/os-release
 
+      - run: |
+          which node
+          node --version
+
+      - run: |
+          which npm
+          npm --version
+
       - uses: actions/checkout@v4
