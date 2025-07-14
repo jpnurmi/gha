@@ -39,6 +39,7 @@ jobs:
     steps:
       - run: |
           sudo sed -i 's/ID=alpine/ID=unknown/' /etc/os-release
+        if: ${{ matrix.container && runner.arch == 'ARM64' }}
 
       - run: |
           sudo mkdir -p /__e/node20/bin
