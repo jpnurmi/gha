@@ -18,13 +18,19 @@ jobs:
           - os: ubuntu-24.04
           - os: ubuntu-24.04-arm
           - os: ubuntu-24.04
-            container: ghcr.io/jpnurmi/alpine:3.21
+            container:
+              image: ghcr.io/jpnurmi/alpine:3.21
           - os: ubuntu-24.04
-            container: ghcr.io/jpnurmi/alpine:3.22
+            container:
+              image: ghcr.io/jpnurmi/alpine:3.22
           - os: ubuntu-24.04-arm
-            container: ghcr.io/jpnurmi/alpine:3.21
+            container:
+              image: ghcr.io/jpnurmi/alpine:3.21
+              volumes: [/usr:/__e/node20]
           - os: ubuntu-24.04-arm
-            container: ghcr.io/jpnurmi/alpine:3.22
+            container:
+              image: ghcr.io/jpnurmi/alpine:3.22
+              volumes: [/usr:/__e/node20]
 
     steps:
       - run: |
