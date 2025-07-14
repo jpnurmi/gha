@@ -26,9 +26,10 @@ jobs:
           # > Error: JavaScript Actions in Alpine containers are only supported on x64 Linux runners. Detected Linux Arm64
           # https://github.com/actions/runner/blob/0d24afa114c2ee4b6451e35f2ba2cb9b96955789/src/Runner.Worker/Handlers/StepHost.cs#L268-L274
           - os: ubuntu-24.04-arm
-            container: ghcr.io/jpnurmi/alpine:3.21
-            volumes:
-              - /usr:/__e/node20
+            container:
+              image: ghcr.io/jpnurmi/alpine:3.21
+              volumes:
+                - /usr:/__e/node20
         #   - os: ubuntu-24.04-arm
         #     container: ghcr.io/jpnurmi/alpine:3.22
 
