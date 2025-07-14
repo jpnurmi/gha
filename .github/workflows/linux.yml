@@ -43,7 +43,10 @@ jobs:
           node --version
 
       - run: |
-          sudo mv /__e/node20 /__e/node20.bak
-        if: ${{ matrix.container }}
+          mount
+
+    #   - run: |
+    #       sudo mv /__e/node20 /__e/node20.bak
+    #     if: ${{ matrix.container }}
 
       - uses: actions/checkout@v4
