@@ -15,12 +15,12 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        #   - os: ubuntu-24.04
-        #   - os: ubuntu-24.04-arm
-        #   - os: ubuntu-24.04
-        #     container: ghcr.io/jpnurmi/alpine:3.21
-        #   - os: ubuntu-24.04
-        #     container: ghcr.io/jpnurmi/alpine:3.22
+          - os: ubuntu-24.04
+          - os: ubuntu-24.04-arm
+          - os: ubuntu-24.04
+            container: ghcr.io/jpnurmi/alpine:3.21
+          - os: ubuntu-24.04
+            container: ghcr.io/jpnurmi/alpine:3.22
 
           # actions/checkout:
           # > Error: JavaScript Actions in Alpine containers are only supported on x64 Linux runners. Detected Linux Arm64
@@ -30,14 +30,14 @@ jobs:
               image: ghcr.io/jpnurmi/alpine:3.21
               volumes:
                 - /opt/node:/__e/node20
-        #   - os: ubuntu-24.04-arm
-        #     container: ghcr.io/jpnurmi/alpine:3.22
+          - os: ubuntu-24.04-arm
+            container:
+              image: ghcr.io/jpnurmi/alpine:3.22
+              volumes:
+                - /opt/node:/__e/node20
 
     steps:
       - run: |
-          cat /etc/os-release
-          ls -la /etc/os-release
-
       - run: |
           sudo sed -i 's/ID=alpine/ID=unknown/' /etc/os-release
 
@@ -45,16 +45,5 @@ jobs:
           sudo mkdir -p /__e/node20/bin
           sudo ln -s /usr/bin/node /__e/node20/bin/node
           sudo ln -s /usr/bin/npm /__e/node20/bin/npm
-
-      - run: |
-          which node
-          node --version
-
-      - run: |
-          df -h
-
-    #   - run: |
-    #       sudo mv /__e/node20 /__e/node20.bak
-    #     if: ${{ matrix.container }}
 
       - uses: actions/checkout@v4
