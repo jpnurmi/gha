@@ -47,10 +47,7 @@ jobs:
           npm --version
 
       - run: |
-          ls /__e/
-
-      - run: |
-          ls /__e/node20/bin
-        if: ${{ !matrix.container }}
+          tree /__e/
+        if: ${{ matrix.container }}
 
       - uses: actions/checkout@v4
