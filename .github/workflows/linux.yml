@@ -39,4 +39,10 @@ jobs:
       - run: |
           cat /etc/*release
 
+      - run: |
+          uname -m
+
+      - run: |
+          df -h
+
       - uses: actions/checkout@v4
