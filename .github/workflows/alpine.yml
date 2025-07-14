@@ -43,4 +43,3 @@ jobs:
           tags: ghcr.io/${{ github.repository_owner }}/alpine:${{ matrix.version }}
           build-args: |
             BASE=alpine:${{ matrix.version }}
-            TARGETPLATFORM
