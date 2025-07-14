@@ -43,7 +43,7 @@ jobs:
           node --version
 
       - run: |
-          mount
+          df -h
 
     #   - run: |
     #       sudo mv /__e/node20 /__e/node20.bak
