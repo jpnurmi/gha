@@ -5,6 +5,7 @@ on:
     paths:
       - '**/alpine.yml'
       - 'Dockerfile'
+      - 'entrypoint.sh'
   workflow_dispatch:
   workflow_call:
 
