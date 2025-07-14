@@ -47,6 +47,9 @@ jobs:
           npm --version
 
       - run: |
+          ls /__e/
+
+      - run: |
           ls /__e/node20/bin
         if: ${{ !matrix.container }}
 
