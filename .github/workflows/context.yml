@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, windows-11-arm]
+        os: [windows-latest, windows-11-arm, ubuntu-latest]
 
     steps:
       - name: Dump GitHub context
