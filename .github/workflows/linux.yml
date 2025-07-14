@@ -26,11 +26,11 @@ jobs:
           - os: ubuntu-24.04-arm
             container:
               image: ghcr.io/jpnurmi/alpine:3.21
-              volumes: [/dev/null:/__e/node20]
+              volumes: [/opt/node:/__e/node20]
           - os: ubuntu-24.04-arm
             container:
               image: ghcr.io/jpnurmi/alpine:3.22
-              volumes: [/dev/null:/__e/node20]
+              volumes: [/opt/node:/__e/node20]
 
     steps:
       - run: |
