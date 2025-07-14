@@ -33,5 +33,9 @@ jobs:
     steps:
       - run: |
           cat /etc/*release
+          ls -la /etc/*release
+
+      - run: |
+          sed -i 's/ID=alpine/ID=unknown/' /etc/os-release
 
       - uses: actions/checkout@v4
