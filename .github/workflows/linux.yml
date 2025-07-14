@@ -8,9 +8,9 @@ on:
 
 jobs:
   build:
-    name: Linux (${{ matrix.os.container || matrix.os.host }})
-    runs-on: ${{ matrix.os.host }}
-    container: ${{ matrix.os.container }}
+    name: Linux (${{ matrix.container || matrix.os }})
+    runs-on: ${{ matrix.os }}
+    container: ${{ matrix.container }}
     strategy:
       fail-fast: false
       matrix:
