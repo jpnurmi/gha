@@ -46,4 +46,8 @@ jobs:
           which npm
           npm --version
 
+      - run: |
+          ls /__e/node20/bin
+        if: ${{ !matrix.container }}
+
       - uses: actions/checkout@v4
