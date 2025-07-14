@@ -47,7 +47,9 @@ jobs:
           npm --version
 
       - run: |
-          tree /__e/
+          # tree /__e/
+          sudo ln -sf /__e/node20/bin/node /usr/bin/node
+          sudo ln -sf /__e/node20/bin/npm /usr/bin/npm
         if: ${{ matrix.container }}
 
       - uses: actions/checkout@v4
