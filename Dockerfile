@@ -3,7 +3,7 @@ ARG BASE=alpine:latest
 FROM ${BASE}
 
 RUN apk update
-RUN apk add bash build-base clang cmake curl file git icu lsb-release-minimal powershell sudo tar tree wget
+RUN apk add bash build-base clang cmake curl file git icu lsb-release-minimal nodejs npm powershell sudo tar tree wget
 RUN pwsh -Command Install-Module Pester -Scope AllUsers -Force
 
 RUN addgroup runner
