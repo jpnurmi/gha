@@ -32,10 +32,10 @@ jobs:
 
     steps:
       - run: |
-          cat /etc/*release
-          ls -la /etc/*release
+          cat /etc/os-release
+          ls -la /etc/os-release
 
       - run: |
-          sed -i 's/ID=alpine/ID=unknown/' /etc/os-release
+          sudo sed -i 's/ID=alpine/ID=unknown/' /etc/os-release
 
       - uses: actions/checkout@v4
