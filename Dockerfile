@@ -6,10 +6,12 @@ RUN apk update
 RUN apk add bash build-base clang cmake curl file git icu lsb-release-minimal nodejs npm powershell sudo tar tree wget
 RUN pwsh -Command Install-Module Pester -Scope AllUsers -Force
 
-RUN mkdir -p /__e/node20/bin
-RUN ln -s /usr/bin/node /__e/node20/bin/node
-RUN ln -s /usr/bin/npm /__e/node20/bin/npm
-RUN sed -i 's/ID=alpine/ID=unknown/' /etc/os-release
+RUN if [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
+    mkdir -p /__e/node20/bin && \
+    ln -s /usr/bin/node /__e/node20/bin/node && \
+    ln -s /usr/bin/npm /__e/node20/bin/npm && \
+    sed -i 's/ID=alpine/ID=unknown/' /etc/os-release ; \
+  fi
 
 RUN addgroup runner
 RUN adduser -S -u 1001 -h /home/runner -G runner runner
