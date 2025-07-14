@@ -15,10 +15,6 @@ RUN echo "runner ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/runner
 RUN chmod 0440 /etc/sudoers.d/runner
 RUN chmod -R 777 /opt
 RUN chmod -R 777 /usr/share
-
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-
 USER runner
 WORKDIR /__w
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/bin/bash"]

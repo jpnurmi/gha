@@ -27,14 +27,19 @@ jobs:
             container:
               image: ghcr.io/jpnurmi/alpine:3.21
               volumes: [/opt/node:/__e/node20]
-              entrypoint: ["/entrypoint.sh"]
           - os: ubuntu-24.04-arm
             container:
               image: ghcr.io/jpnurmi/alpine:3.22
               volumes: [/opt/node:/__e/node20]
-              entrypoint: ["/entrypoint.sh"]
 
     steps:
+      - run: |
+          sudo mkdir -p /__e/node20/bin
+          sudo ln -s /usr/bin/node /__e/node20/bin/node
+          sudo ln -s /usr/bin/npm /__e/node20/bin/npm
+          sudo sed -i 's/ID=alpine/ID=unknown/' /usr/lib/os-release
+        if: ${{ matrix.container && runner.arch == 'ARM64' }}
+
       - run: |
           ls -la /etc/*release
 
