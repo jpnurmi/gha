@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -xe
 
 if [[ "$(uname -m)" != "x86_64" ]]; then
     sudo mkdir -p /__e/node20/bin
