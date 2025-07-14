@@ -35,23 +35,15 @@ jobs:
           cat /etc/os-release
           ls -la /etc/os-release
 
-    #   - run: |
-    #       sudo sed -i 's/ID=alpine/ID=unknown/' /etc/os-release
+      - run: |
+          sudo sed -i 's/ID=alpine/ID=unknown/' /etc/os-release
 
-    #   - run: |
-    #       which node
-    #       node --version
+      - run: |
+          which node
+          node --version
 
-    #   - run: |
-    #       which npm
-    #       npm --version
-
-    #   - run: |
-    #       # tree /__e/
-    #       sudo ln -sf /__e/node20/bin/node /usr/bin/node
-    #       sudo ln -sf /__e/node20/bin/npm /usr/bin/npm
-    #     if: ${{ matrix.container }}
+      - run: |
+          mv /__e/node20 /__e/node20.bak
+        if: ${{ matrix.container }}
 
       - uses: actions/checkout@v4
-        env:
-          CONTAINER_HOOKS: false
