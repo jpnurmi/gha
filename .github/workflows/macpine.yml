@@ -1,0 +1,36 @@
+name: Alpine on Mac
+
+on:
+  push:
+    paths:
+      - '**/macpine.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-15
+    container:
+      image: ghcr.io/jpnurmi/alpine:3.22
+      # volumes: [/tmp/node20:/__e/node20]
+
+    steps:
+      # - run: |
+      #     sudo mkdir -p /__e/node20/bin
+      #     sudo ln -s /usr/bin/node /__e/node20/bin/node
+      #     sudo ln -s /usr/bin/npm /__e/node20/bin/npm
+      #     sudo sed -i 's/ID=alpine/ID=unknown/' /usr/lib/os-release
+      #   if: ${{ matrix.container && runner.arch == 'ARM64' }}
+
+      - run: |
+          ls -la /etc/*release
+
+      - run: |
+          cat /etc/*release
+
+      - run: |
+          uname -m
+
+      - run: |
+          df -h
+
+      - uses: actions/checkout@v4
