@@ -8,21 +8,27 @@ on:
 
 jobs:
   setup-java:
-    name: setup-java ${{ matrix.java-version }} (${{ matrix.os.container || matrix.os.host }}, ${{ matrix.java-distribution }})
+    name: setup-java ${{ matrix.java-version }} (${{ matrix.os.id }}, ${{ matrix.java-distribution }})
     runs-on: ${{ matrix.os.host }}
     container: ${{ matrix.os.container }}
     strategy:
       fail-fast: false
       matrix:
-        java-distribution: [temurin, microsoft]
+        java-distribution: [temurin, microsoft, oracle, jetbrains, zulu]
         java-version: [17, 21]
+        # cmdline-tools-version: [12266719, 13114758]
         os:
-          - host: ubuntu-latest
-          - host: ubuntu-24.04-arm
-          - host: ubuntu-latest
+          - id: linux-x64
+            host: ubuntu-latest
+          - id: linux-arm64
+            host: ubuntu-24.04-arm
+          - id: linux-musl-x64
+            host: ubuntu-latest
             container: ghcr.io/jpnurmi/alpine:3.21
-          - host: windows-latest
-          - host: windows-11-arm
+          - id: win-x64
+            host: windows-latest
+          - id: win-arm64
+            host: windows-11-arm
 
     steps:
       - uses: actions/checkout@v4
