@@ -48,7 +48,7 @@ jobs:
       # extract it to temp
       - run: |
           $tools = Join-Path $env:TEMP 'commandlinetools-win-12266719_latest'
-          Create-Directory -Path $tools -Force
+          New-Item -Path $tools -ItemType Directory -Force
           $toolsZip = Join-Path $tools 'commandlinetools-win-12266719_latest.zip'
           Invoke-WebRequest -Uri 'https://dl.google.com/android/repository/commandlinetools-win-12266719_latest.zip' -OutFile $toolsZip
           Expand-Archive -Path $toolsZip -DestinationPath $tools -Force
