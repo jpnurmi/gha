@@ -57,6 +57,8 @@ jobs:
           Expand-Archive -Path $toolsZip -DestinationPath $tools -Force
           tree $tools
 
+          & (Join-Path $tools 'cmdline-tools\bin\sdkmanager.bat') --list
+        continue-on-error: true
 
       # same for commandlinetools-win-13114758_latest.zip
       - run: |
@@ -69,6 +71,9 @@ jobs:
 
           Expand-Archive -Path $toolsZip -DestinationPath $tools -Force
           tree $tools
+
+          & (Join-Path $tools 'cmdline-tools\bin\sdkmanager.bat') --list
+        continue-on-error: true
 
       - name: Setup Android SDK
         #uses: android-actions/setup-android@07976c6290703d34c16d382cb36445f98bb43b1f # v3.2.0
