@@ -38,11 +38,11 @@ jobs:
       #     log-accepted-android-sdk-licenses: false
       #     packages: "ndk;23.2.8568313"
 
-      - name: Install Java 21
+      - name: Install Java 17
         uses: actions/setup-java@v4
         with:
-          distribution: 'microsoft'
-          java-version: '21'
+          distribution: ${{ runner.os == 'Windows' && runner.arch == 'ARM64' && 'microsoft' || 'temurin' }}
+          java-version: '17'
 
       # download https://dl.google.com/android/repository/commandlinetools-win-12266719_latest.zip
       # extract it to temp
@@ -53,11 +53,8 @@ jobs:
           Invoke-WebRequest -Uri 'https://dl.google.com/android/repository/commandlinetools-win-12266719_latest.zip' -OutFile $toolsZip
 
           unzip -l $toolsZip
-
           Expand-Archive -Path $toolsZip -DestinationPath $tools -Force
-          tree $tools
-
-          & (Join-Path $tools 'cmdline-tools\bin\sdkmanager.bat') --list
+          & (Join-Path $tools 'cmdline-tools\bin\sdkmanager.bat') --list --sdk_root $tools
         continue-on-error: true
 
       # same for commandlinetools-win-13114758_latest.zip
@@ -68,11 +65,8 @@ jobs:
           Invoke-WebRequest -Uri 'https://dl.google.com/android/repository/commandlinetools-win-13114758_latest.zip' -OutFile $toolsZip
 
           unzip -l $toolsZip
-
           Expand-Archive -Path $toolsZip -DestinationPath $tools -Force
-          tree $tools
-
-          & (Join-Path $tools 'cmdline-tools\bin\sdkmanager.bat') --list
+          & (Join-Path $tools 'cmdline-tools\bin\sdkmanager.bat') --list --sdk_root $tools
         continue-on-error: true
 
       - name: Setup Android SDK
