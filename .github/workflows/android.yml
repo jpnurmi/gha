@@ -41,8 +41,17 @@ jobs:
       - name: Install Java 17
         uses: actions/setup-java@v4
         with:
-          distribution: ${{ runner.os == 'Windows' && runner.arch == 'ARM64' && 'microsoft' || 'temurin' }}
+          distribution: 'microsoft'
           java-version: '17'
+
+      # download https://dl.google.com/android/repository/commandlinetools-win-12266719_latest.zip
+      # extract it to temp
+      - run: |
+          $tools = Join-Path $env:TEMP 'commandlinetools-win-12266719_latest'
+          $toolsZip = Join-Path $tools 'commandlinetools-win-12266719_latest.zip'
+          Invoke-WebRequest -Uri 'https://dl.google.com/android/repository/commandlinetools-win-12266719_latest.zip' -OutFile $toolsZip
+          Expand-Archive -Path $toolsZip -DestinationPath $tools -Force
+          tree $tools
 
       - name: Setup Android SDK
         #uses: android-actions/setup-android@07976c6290703d34c16d382cb36445f98bb43b1f # v3.2.0
