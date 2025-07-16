@@ -76,6 +76,7 @@ jobs:
         uses: android-actions/setup-android@v3
         with:
           log-accepted-android-sdk-licenses: false
+          cmdline-tools-version: 13114758
         # env:
         #   ANDROID_SDK_ROOT: C:\Android\android-sdk
 
