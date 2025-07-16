@@ -44,6 +44,11 @@ jobs:
           distribution: ${{ runner.os == 'Windows' && runner.arch == 'ARM64' && 'microsoft' || 'temurin' }}
           java-version: '17'
 
+      - run: |
+          Get-Command java
+          java --version
+        shell: pwsh
+
       # download https://dl.google.com/android/repository/commandlinetools-win-12266719_latest.zip
       # extract it to temp
       - run: |
