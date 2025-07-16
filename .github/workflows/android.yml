@@ -25,8 +25,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # - uses: ./.github/actions/dumpbin
-      #   if: ${{ runner.os == 'Windows' }}
+      - uses: ./.github/actions/dumpbin
+        if: ${{ runner.os == 'Windows' }}
 
       # - uses: actions/setup-java@v3
       #   with:
@@ -38,18 +38,19 @@ jobs:
       #     log-accepted-android-sdk-licenses: false
       #     packages: "ndk;23.2.8568313"
 
-      - name: Install Java 21
+      - name: Install Java 17
         uses: actions/setup-java@v4
         with:
           distribution: ${{ runner.os == 'Windows' && runner.arch == 'ARM64' && 'microsoft' || 'temurin' }}
-          java-version: '21'
+          java-version: '17'
 
       - name: Setup Android SDK
-        uses: android-actions/setup-android@07976c6290703d34c16d382cb36445f98bb43b1f # v3.2.0
+        #uses: android-actions/setup-android@07976c6290703d34c16d382cb36445f98bb43b1f # v3.2.0
+        uses: android-actions/setup-android@9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407 # v3.2.2
         with:
           log-accepted-android-sdk-licenses: false
-        env:
-          ANDROID_SDK_ROOT: C:\Android\android-sdk
+        # env:
+        #   ANDROID_SDK_ROOT: C:\Android\android-sdk
 
       # - run: sdkmanager "build-tools;34.0.0"
 
