@@ -8,15 +8,15 @@ on:
 
 jobs:
   setup-java:
-    name: setup-java ${{ matrix.java-version }} (${{ matrix.os.id }}, ${{ matrix.java-distribution }})
+    name: ${{ matrix.java-distribution }} ${{ matrix.java-version }} (${{ matrix.os.id }}, ${{ matrix.cmdline-tools-version }})
     runs-on: ${{ matrix.os.host }}
     container: ${{ matrix.os.container }}
     strategy:
       fail-fast: false
       matrix:
-        java-distribution: [temurin, microsoft, oracle, jetbrains, zulu]
+        java-distribution: [temurin, microsoft, oracle, zulu]
         java-version: [17, 21]
-        # cmdline-tools-version: [12266719, 13114758]
+        cmdline-tools-version: [12266719, 13114758]
         os:
           - id: linux-x64
             host: ubuntu-latest
@@ -56,8 +56,6 @@ jobs:
       - run: java -version
 
       - name: Setup Android SDK
-        #uses: android-actions/setup-android@07976c6290703d34c16d382cb36445f98bb43b1f # v3.2.0
-        #uses: android-actions/setup-android@9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407 # v3.2.2
         uses: android-actions/setup-android@v3
         with:
           log-accepted-android-sdk-licenses: false
