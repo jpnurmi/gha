@@ -51,38 +51,47 @@ jobs:
 
       # download https://dl.google.com/android/repository/commandlinetools-win-12266719_latest.zip
       # extract it to temp
-      - run: |
-          $tools = Join-Path $env:TEMP 'commandlinetools-win-12266719_latest'
-          New-Item -Path $tools -ItemType Directory -Force
-          $toolsZip = Join-Path $tools 'commandlinetools-win-12266719_latest.zip'
-          Invoke-WebRequest -Uri 'https://dl.google.com/android/repository/commandlinetools-win-12266719_latest.zip' -OutFile $toolsZip
+      # - run: |
+      #     $tools = Join-Path $env:TEMP 'commandlinetools-win-12266719_latest'
+      #     New-Item -Path $tools -ItemType Directory -Force
+      #     $toolsZip = Join-Path $tools 'commandlinetools-win-12266719_latest.zip'
+      #     Invoke-WebRequest -Uri 'https://dl.google.com/android/repository/commandlinetools-win-12266719_latest.zip' -OutFile $toolsZip
 
-          unzip -l $toolsZip
-          Expand-Archive -Path $toolsZip -DestinationPath $tools -Force
-          & (Join-Path $tools 'cmdline-tools\bin\sdkmanager.bat') --list --sdk_root $tools
-        continue-on-error: true
+      #     unzip -l $toolsZip
+      #     Expand-Archive -Path $toolsZip -DestinationPath $tools -Force
+      #     & (Join-Path $tools 'cmdline-tools\bin\sdkmanager.bat') --list --sdk_root $tools
+      #   continue-on-error: true
 
       # same for commandlinetools-win-13114758_latest.zip
-      - run: |
-          $tools = Join-Path $env:TEMP 'commandlinetools-win-13114758_latest'
-          New-Item -Path $tools -ItemType Directory -Force
-          $toolsZip = Join-Path $tools 'commandlinetools-win-13114758_latest.zip'
-          Invoke-WebRequest -Uri 'https://dl.google.com/android/repository/commandlinetools-win-13114758_latest.zip' -OutFile $toolsZip
+      # - run: |
+      #     $tools = Join-Path $env:TEMP 'commandlinetools-win-13114758_latest'
+      #     New-Item -Path $tools -ItemType Directory -Force
+      #     $toolsZip = Join-Path $tools 'commandlinetools-win-13114758_latest.zip'
+      #     Invoke-WebRequest -Uri 'https://dl.google.com/android/repository/commandlinetools-win-13114758_latest.zip' -OutFile $toolsZip
 
-          unzip -l $toolsZip
-          Expand-Archive -Path $toolsZip -DestinationPath $tools -Force
-          & (Join-Path $tools 'cmdline-tools\bin\sdkmanager.bat') --list --sdk_root $tools
-        continue-on-error: true
+      #     unzip -l $toolsZip
+      #     Expand-Archive -Path $toolsZip -DestinationPath $tools -Force
+      #     & (Join-Path $tools 'cmdline-tools\bin\sdkmanager.bat') --list --sdk_root $tools
+      #   continue-on-error: true
 
       - name: Setup Android SDK
         #uses: android-actions/setup-android@07976c6290703d34c16d382cb36445f98bb43b1f # v3.2.0
         #uses: android-actions/setup-android@9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407 # v3.2.2
         uses: android-actions/setup-android@v3
         with:
+          packages: platform-tools
           log-accepted-android-sdk-licenses: false
-          cmdline-tools-version: 13114758
+          # cmdline-tools-version: 13114758
         # env:
+        #   ANDROID_HOME: C:\Android\android-sdk
+        #   ANDROID_NDK: C:\Android\android-sdk\ndk\27.2.12479018
+        #   ANDROID_NDK_HOME: C:\Android\android-sdk\ndk\27.2.12479018
+        #   ANDROID_NDK_LATEST_HOME: C:\Android\android-sdk\ndk\27.2.12479018
+        #   ANDROID_NDK_ROOT: C:\Android\android-sdk\ndk\27.2.12479018
         #   ANDROID_SDK_ROOT: C:\Android\android-sdk
+
+      - if: ${{ runner.os == 'Windows' && runner.arch == 'X64' }}
+        run: sdkmanager tools
 
       # - run: sdkmanager "build-tools;34.0.0"
 
