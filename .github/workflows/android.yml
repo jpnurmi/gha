@@ -79,7 +79,7 @@ jobs:
         #uses: android-actions/setup-android@9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407 # v3.2.2
         uses: android-actions/setup-android@v3
         with:
-          packages: platform-tools build-tools;34.0.0 build-tools;35.0.0
+          packages: platform-tools build-tools;36.0.0
           log-accepted-android-sdk-licenses: false
           # cmdline-tools-version: 13114758
         # env:
