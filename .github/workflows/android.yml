@@ -48,6 +48,8 @@ jobs:
         uses: android-actions/setup-android@07976c6290703d34c16d382cb36445f98bb43b1f # v3.2.0
         with:
           log-accepted-android-sdk-licenses: false
+        env:
+          ANDROID_SDK_ROOT: C:\Android\android-sdk
 
       # - run: sdkmanager "build-tools;34.0.0"
 
