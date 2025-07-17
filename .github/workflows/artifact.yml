@@ -18,6 +18,8 @@ jobs:
           - os: windows-latest
 
     steps:
+      - run: exit 1
+
       - run: echo hello > foo.txt
         shell: bash
 
