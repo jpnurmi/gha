@@ -1,0 +1,29 @@
+name: Artifact
+
+on:
+  push:
+    paths:
+      - '**/artifact.yml'
+  workflow_dispatch:
+
+jobs:
+  env:
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+          - os: windows-latest
+
+    steps:
+      - run: echo hello > foo.txt
+        shell: bash
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: foo-${{ runner.os }}.txt
+          path: |
+            foo.txt
+          if-no-files-found: warn
