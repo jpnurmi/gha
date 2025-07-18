@@ -17,8 +17,8 @@ jobs:
       - name: Install winget
         run: |
           # Download and install Microsoft.VCLibs (dependency)
-          Invoke-WebRequest -Uri "https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx" -OutFile "vclibs.appx"
-          Add-AppxPackage "vclibs.appx"
+          #Invoke-WebRequest -Uri "https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx" -OutFile "vclibs.appx"
+          #Add-AppxPackage "vclibs.appx"
           
           # Download and install App Installer (includes winget)
           Invoke-WebRequest -Uri "https://github.com/microsoft/winget-cli/releases/latest/download/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle" -OutFile "winget.msixbundle"
