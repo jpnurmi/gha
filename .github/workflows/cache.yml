@@ -29,7 +29,7 @@ jobs:
         shell: powershell
 
       #- run: choco install --debug --verbose zstandard
-      - run: winget install Zstandard
+      - run: winget install Zstandard --accept-source-agreements --accept-package-agreements
 
       - uses: actions/cache@v4
         id: cache-hello
