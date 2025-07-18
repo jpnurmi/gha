@@ -18,12 +18,10 @@ jobs:
       - shell: pwsh
         run: |
           $version = '1.5.7'
-          $toolDir = "${{ runner.tool_cache }}\zstd\$version"
+          $toolDir = "${{ runner.tool_cache }}\zstd-v$version-win64"
 
           Invoke-WebRequest -OutFile "$env:TEMP\zstd.zip" -Uri "https://github.com/facebook/zstd/releases/download/v$version/zstd-v$version-win64.zip"
-          New-Item -ItemType Directory -Path $toolDir -Force | Out-Null
-          Expand-Archive -Path "$env:TEMP\zstd.zip" -DestinationPath $toolDir -Force
-          dir $toolDir
+          Expand-Archive -Path "$env:TEMP\zstd.zip" -DestinationPath ${{ runner.tool_cache }} -Force
           & "$toolDir\zstd.exe" --version
           echo "$toolDir" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
