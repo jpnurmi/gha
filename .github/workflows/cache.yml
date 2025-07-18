@@ -18,27 +18,11 @@ jobs:
       - shell: pwsh
         run: |
           $version = '1.5.7'
-          $downloadUrl = "https://github.com/facebook/zstd/releases/download/v$version/zstd-v$version-win64.zip"
-
-          Write-Host "Downloading zstd v$version"
-
-          # Download and extract
-          $zipPath = "$env:TEMP\zstd.zip"
-          Invoke-WebRequest -Uri $downloadUrl -OutFile $zipPath
-          Expand-Archive -Path $zipPath -DestinationPath $env:TEMP -Force
-
-          # Copy binary to tools directory
-          $targetDir = "C:\tools\zstd"
-          New-Item -ItemType Directory -Path $targetDir -Force | Out-Null
-          Copy-Item "$env:TEMP\zstd-v$version-win64\zstd.exe" $targetDir -Force
-
-          # Add to PATH
-          echo "$targetDir" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-
-          Write-Host "zstd installed successfully"
-
-          # Verify installation
-          & "$targetDir\zstd.exe" --version
+          Invoke-WebRequest -OutFile "$env:TEMP\zstd.zip" -Uri "https://github.com/facebook/zstd/releases/download/v$version/zstd-v$version-win64.zip" -OutFile
+          $toolDir = "${{ runner.tool_cache }}\zstd\$version"
+          New-Item -ItemType Directory -Path $toolDir -Force | Out-Null
+          Expand-Archive -Path "$env:TEMP\zstd.zip" -DestinationPath $toolDir -Force
+          echo "$toolDir" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
       - uses: actions/cache@v4
         id: cache-hello
