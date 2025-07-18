@@ -17,7 +17,7 @@ jobs:
 
       - shell: pwsh
         run: |
-          $version = 'v1.5.7'
+          $version = '1.5.7'
           $downloadUrl = "https://github.com/facebook/zstd/releases/download/v$version/zstd-v$version-win64.zip"
 
           Write-Host "Downloading zstd v$version"
