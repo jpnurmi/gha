@@ -8,13 +8,28 @@ on:
 
 jobs:
   save:
-    runs-on: windows-11-arm
+    #runs-on: windows-11-arm
+    runs-on: windows-2025
 
     steps:
       - run: echo "Hello from windows-11-arm" > hello.txt
 
+      - name: Install winget
+        run: |
+          # Download and install Microsoft.VCLibs (dependency)
+          Invoke-WebRequest -Uri "https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx" -OutFile "vclibs.appx"
+          Add-AppxPackage "vclibs.appx"
+          
+          # Download and install App Installer (includes winget)
+          Invoke-WebRequest -Uri "https://github.com/microsoft/winget-cli/releases/latest/download/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle" -OutFile "winget.msixbundle"
+          Add-AppxPackage "winget.msixbundle"
+          
+          # Refresh environment
+          $env:PATH = [System.Environment]::GetEnvironmentVariable("PATH", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("PATH", "User")
+        shell: powershell
+
       #- run: choco install --debug --verbose zstandard
-      - run: winget install Zstandard.Zstandard
+      - run: winget install Zstandard
 
       - uses: actions/cache@v4
         id: cache-hello
