@@ -24,7 +24,7 @@ jobs:
       - id: version
         run: |
           pattern="${{ github.event.inputs.versions || '*' }}"
-          selected=$(jq --arg pat "$pattern" \
+          selected=$(jq -c --arg pat "$pattern" \
             '[.[] | select(test("^" + ($pat | gsub("\\*"; ".*") | gsub("\\?"; ".")) + "$"))]' \
             <<< '${{ env.ALL_VERSIONS }}')
 
