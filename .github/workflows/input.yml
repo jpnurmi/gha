@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       versions:
-        description: 'Versions'
+        description: 'Version(s) to test (supports wildcards e.g. "24*" or "25??01")'
         required: false
         default: '*'
         type: string
@@ -24,12 +24,10 @@ jobs:
       - id: version
         run: |
           pattern="${{ github.event.inputs.versions || '*' }}"
-          selected=$(jq -c --arg pat "$pattern" \
+          versions=$(jq -c --arg pat "$pattern" \
             '[.[] | select(test("^" + ($pat | gsub("\\*"; ".*") | gsub("\\?"; ".")) + "$"))]' \
             <<< '${{ env.ALL_VERSIONS }}')
-
-          echo "Selected: $selected"
-          echo "versions=$selected" >> $GITHUB_OUTPUT
+          echo "versions=$versions" >> $GITHUB_OUTPUT
 
   build:
     runs-on: ubuntu-latest
