@@ -1,0 +1,22 @@
+name: Mac
+
+on:
+  push:
+    paths:
+      - '**/mac.yml'
+  workflow_dispatch:
+
+jobs:
+  env:
+    name: Mac
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-13
+          - os: macos-14
+          - os: macos-15
+
+    steps:
+      - run: xcodebuild -showsdks
