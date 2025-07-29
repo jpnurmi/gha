@@ -18,3 +18,4 @@ jobs:
 
     steps:
       - run: where cmd.exe
+        shell: cmd
