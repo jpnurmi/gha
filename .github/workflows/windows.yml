@@ -1,0 +1,20 @@
+name: Windows
+
+on:
+  push:
+    paths:
+      - '**/windows.yml'
+  workflow_dispatch:
+
+jobs:
+  windows:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+          - os: windows-11-arm
+
+    steps:
+      - run: where cmd.exe
