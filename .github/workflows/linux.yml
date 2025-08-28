@@ -39,7 +39,7 @@ jobs:
     steps:
       - run: |
           ls -la /__e/
-          for node in /__e/node2*; do
+          # for node in /__e/node2*; do
           #   sudo mkdir -p $node/bin
           #   sudo ln -s /usr/bin/node $node/bin/node
           #   sudo ln -s /usr/bin/npm $node/bin/npm
