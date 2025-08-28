@@ -26,19 +26,28 @@ jobs:
           - os: ubuntu-24.04-arm
             container:
               image: ghcr.io/jpnurmi/alpine:3.21
-              #volumes: [/tmp/node20:/__e/node20]
+              volumes:
+                - /tmp/node20:/__e/node20
+                - /tmp/node24:/__e/node24
           - os: ubuntu-24.04-arm
             container:
               image: ghcr.io/jpnurmi/alpine:3.22
-              #volumes: [/tmp/node20:/__e/node20]
+              volumes:
+                - /tmp/node20:/__e/node20
+                - /tmp/node24:/__e/node24
 
     steps:
       - run: |
           ls -la /__e/
+          for node in /__e/node20 /__e/node24; do
+            sudo mkdir -p $node/bin
+            sudo ln -s /usr/bin/node $node/bin/node
+            sudo ln -s /usr/bin/npm $node/bin/npm
+          done
           #sudo mkdir -p /__e/node20/bin
           #sudo ln -s /usr/bin/node /__e/node20/bin/node
           #sudo ln -s /usr/bin/npm /__e/node20/bin/npm
-          #sudo sed -i 's/ID=alpine/ID=unknown/' /usr/lib/os-release
+          sudo sed -i 's/ID=alpine/ID=unknown/' /usr/lib/os-release
         if: ${{ matrix.container && runner.arch == 'ARM64' }}
 
       - run: |
@@ -54,3 +63,9 @@ jobs:
           df -h
 
       - uses: actions/checkout@v4
+        with:
+          path: v4
+
+      - uses: actions/checkout@v5
+        with:
+          path: v5
