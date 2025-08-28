@@ -39,7 +39,7 @@ jobs:
     steps:
       - run: |
           ls -la /__e/
-          # for node in /__e/node20 /__e/node24; do
+          for node in /__e/node2*; do
           #   sudo mkdir -p $node/bin
           #   sudo ln -s /usr/bin/node $node/bin/node
           #   sudo ln -s /usr/bin/npm $node/bin/npm
@@ -62,9 +62,9 @@ jobs:
       - run: |
           df -h
 
-      - uses: actions/checkout@v4
-        with:
-          path: v4
+      # - uses: actions/checkout@v4
+      #   with:
+      #     path: v4
 
       - uses: actions/checkout@v5
         with:
