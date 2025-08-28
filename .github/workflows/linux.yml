@@ -39,14 +39,14 @@ jobs:
     steps:
       - run: |
           ls -la /__e/
-          for node in /__e/node20 /__e/node24; do
-            sudo mkdir -p $node/bin
-            sudo ln -s /usr/bin/node $node/bin/node
-            sudo ln -s /usr/bin/npm $node/bin/npm
-          done
-          #sudo mkdir -p /__e/node20/bin
-          #sudo ln -s /usr/bin/node /__e/node20/bin/node
-          #sudo ln -s /usr/bin/npm /__e/node20/bin/npm
+          # for node in /__e/node20 /__e/node24; do
+          #   sudo mkdir -p $node/bin
+          #   sudo ln -s /usr/bin/node $node/bin/node
+          #   sudo ln -s /usr/bin/npm $node/bin/npm
+          # done
+          sudo mkdir -p /__e/node24/bin
+          sudo ln -s /usr/bin/node /__e/node24/bin/node
+          sudo ln -s /usr/bin/npm /__e/node24/bin/npm
           sudo sed -i 's/ID=alpine/ID=unknown/' /usr/lib/os-release
         if: ${{ matrix.container && runner.arch == 'ARM64' }}
 
