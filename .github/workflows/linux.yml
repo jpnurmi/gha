@@ -39,14 +39,14 @@ jobs:
     steps:
       - run: |
           ls -la /__e/
-          # for node in /__e/node2*; do
-          #   sudo mkdir -p $node/bin
-          #   sudo ln -s /usr/bin/node $node/bin/node
-          #   sudo ln -s /usr/bin/npm $node/bin/npm
-          # done
-          sudo mkdir -p /__e/node24/bin
-          sudo ln -s /usr/bin/node /__e/node24/bin/node
-          sudo ln -s /usr/bin/npm /__e/node24/bin/npm
+          for node in /__e/node2*; do
+            sudo mkdir -p $node/bin
+            sudo ln -s /usr/bin/node $node/bin/node
+            sudo ln -s /usr/bin/npm $node/bin/npm
+          done
+          #sudo mkdir -p /__e/node24/bin
+          #sudo ln -s /usr/bin/node /__e/node24/bin/node
+          #sudo ln -s /usr/bin/npm /__e/node24/bin/npm
           sudo sed -i 's/ID=alpine/ID=unknown/' /usr/lib/os-release
         if: ${{ matrix.container && runner.arch == 'ARM64' }}
 
@@ -62,10 +62,22 @@ jobs:
       - run: |
           df -h
 
-      # - uses: actions/checkout@v4
-      #   with:
-      #     path: v4
+      - uses: actions/checkout@v4
+        with:
+          path: v4
+
+      - uses: actions/cache@v4
+        id: cache-v4
+        with:
+          path: v4.txt
+          key: v4-${{ matrix.os }}-${{ matrix.container.image || 'none' }}-${{ hashFiles('**/linux.yml') }}
 
       - uses: actions/checkout@v5
         with:
           path: v5
+
+      - uses: actions/cache@v5
+        id: cache-v5
+        with:
+          path: v5.txt
+          key: v5-${{ matrix.os }}-${{ matrix.container.image || 'none' }}-${{ hashFiles('**/linux.yml') }}
