@@ -76,8 +76,8 @@ jobs:
         with:
           path: v5
 
-      - uses: actions/cache@v5
-        id: cache-v5
-        with:
-          path: v5.txt
-          key: v5-${{ matrix.os }}-${{ matrix.container.image || 'none' }}-${{ hashFiles('**/linux.yml') }}
+      # - uses: actions/cache@v5
+      #   id: cache-v5
+      #   with:
+      #     path: v5.txt
+      #     key: v5-${{ matrix.os }}-${{ matrix.container.image || 'none' }}-${{ hashFiles('**/linux.yml') }}
