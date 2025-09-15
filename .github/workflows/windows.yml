@@ -13,9 +13,15 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: windows-latest
+          - os: windows-2025
+          - os: windows-2022
           - os: windows-11-arm
 
     steps:
       - run: where cmd.exe
+        shell: cmd
+
+      - run: |
+          "%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property catalog_productLineVersion
+          "%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationVersion
         shell: cmd
