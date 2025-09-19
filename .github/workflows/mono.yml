@@ -22,7 +22,9 @@ jobs:
 
     steps:
       - run: sudo apt update
-      - run: sudo apt install -y mono-runtime
+      - run: |
+          sudo apt install -y mono-runtime
+          sudo chmod -R a+rw /usr/share/dotnet
 
       - run: mono --version
 
