@@ -1,0 +1,34 @@
+name: Mono
+
+on:
+  push:
+    paths:
+      - '**/mono.yml'
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: mono (${{ matrix.container || matrix.os }})
+    runs-on: ${{ matrix.os }}
+    container: ${{ matrix.container }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+          - os: ubuntu-latest
+            container: ghcr.io/jpnurmi/alpine:3.21
+          - os: ubuntu-24.04-arm
+
+    steps:
+      - run: mono --version
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            9.0.203
+
+      - run: dotnet --version
+      - run: dotnet --list-sdks
+      - run: mono --version
