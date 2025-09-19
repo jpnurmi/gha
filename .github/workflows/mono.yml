@@ -21,8 +21,8 @@ jobs:
           - os: ubuntu-24.04-arm
 
     steps:
-      - run: apt update
-      - run: apt install -y mono-runtime
+      - run: sudo apt update
+      - run: sudo apt install -y mono-runtime
 
       - run: mono --version
 
