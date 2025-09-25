@@ -7,103 +7,128 @@ on:
   workflow_dispatch:
 
 jobs:
-  setup-android:
-    name: setup-android (${{ matrix.container || matrix.os }})
-    runs-on: ${{ matrix.os }}
-    container: ${{ matrix.container }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: ubuntu-latest
-          - os: ubuntu-latest
-            container: ghcr.io/jpnurmi/alpine:3.21
-          - os: ubuntu-24.04-arm
-          - os: windows-latest
-          - os: windows-11-arm
+  # setup-android:
+  #   name: setup-android (${{ matrix.container || matrix.os }})
+  #   runs-on: ${{ matrix.os }}
+  #   container: ${{ matrix.container }}
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       include:
+  #         - os: ubuntu-latest
+  #         - os: ubuntu-latest
+  #           container: ghcr.io/jpnurmi/alpine:3.21
+  #         - os: ubuntu-24.04-arm
+  #         - os: windows-latest
+  #         - os: windows-11-arm
 
+  #   steps:
+  #     - uses: actions/checkout@v4
+
+  #     # - uses: ./.github/actions/dumpbin
+  #     #   if: ${{ runner.os == 'Windows' }}
+
+  #     # - uses: actions/setup-java@v3
+  #     #   with:
+  #     #     distribution: 'temurin'
+  #     #     java-version: '21'
+
+  #     # - uses: android-actions/setup-android@07976c6290703d34c16d382cb36445f98bb43b1f # v3.2.0
+  #     #   with:
+  #     #     log-accepted-android-sdk-licenses: false
+  #     #     packages: "ndk;23.2.8568313"
+
+  #     - name: Install Java 17
+  #       uses: actions/setup-java@v4
+  #       with:
+  #         distribution: ${{ runner.os == 'Windows' && runner.arch == 'ARM64' && 'microsoft' || 'temurin' }}
+  #         java-version: '17'
+
+  #     # - run: |
+  #     #     Get-Command java
+  #     #     java --version
+  #     #   shell: pwsh
+
+  #     # download https://dl.google.com/android/repository/commandlinetools-win-12266719_latest.zip
+  #     # extract it to temp
+  #     # - run: |
+  #     #     $tools = Join-Path $env:TEMP 'commandlinetools-win-12266719_latest'
+  #     #     New-Item -Path $tools -ItemType Directory -Force
+  #     #     $toolsZip = Join-Path $tools 'commandlinetools-win-12266719_latest.zip'
+  #     #     Invoke-WebRequest -Uri 'https://dl.google.com/android/repository/commandlinetools-win-12266719_latest.zip' -OutFile $toolsZip
+
+  #     #     unzip -l $toolsZip
+  #     #     Expand-Archive -Path $toolsZip -DestinationPath $tools -Force
+  #     #     & (Join-Path $tools 'cmdline-tools\bin\sdkmanager.bat') --list --sdk_root $tools
+  #     #   continue-on-error: true
+
+  #     # same for commandlinetools-win-13114758_latest.zip
+  #     # - run: |
+  #     #     $tools = Join-Path $env:TEMP 'commandlinetools-win-13114758_latest'
+  #     #     New-Item -Path $tools -ItemType Directory -Force
+  #     #     $toolsZip = Join-Path $tools 'commandlinetools-win-13114758_latest.zip'
+  #     #     Invoke-WebRequest -Uri 'https://dl.google.com/android/repository/commandlinetools-win-13114758_latest.zip' -OutFile $toolsZip
+
+  #     #     unzip -l $toolsZip
+  #     #     Expand-Archive -Path $toolsZip -DestinationPath $tools -Force
+  #     #     & (Join-Path $tools 'cmdline-tools\bin\sdkmanager.bat') --list --sdk_root $tools
+  #     #   continue-on-error: true
+
+  #     - name: Setup Android SDK
+  #       #uses: android-actions/setup-android@07976c6290703d34c16d382cb36445f98bb43b1f # v3.2.0
+  #       #uses: android-actions/setup-android@9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407 # v3.2.2
+  #       uses: android-actions/setup-android@v3
+  #       with:
+  #         packages: platform-tools build-tools;36.0.0
+  #         log-accepted-android-sdk-licenses: false
+  #         # cmdline-tools-version: 13114758
+  #       # env:
+  #       #   ANDROID_HOME: C:\Android\android-sdk
+  #       #   ANDROID_NDK: C:\Android\android-sdk\ndk\27.2.12479018
+  #       #   ANDROID_NDK_HOME: C:\Android\android-sdk\ndk\27.2.12479018
+  #       #   ANDROID_NDK_LATEST_HOME: C:\Android\android-sdk\ndk\27.2.12479018
+  #       #   ANDROID_NDK_ROOT: C:\Android\android-sdk\ndk\27.2.12479018
+  #       #   ANDROID_SDK_ROOT: C:\Android\android-sdk
+
+  #     - if: ${{ runner.os == 'Windows' && runner.arch == 'X64' }}
+  #       run: sdkmanager tools
+
+  #     # - run: sdkmanager "build-tools;34.0.0"
+
+  #     # - run: |
+  #     #     dumpbin /headers (Join-Path $env:ANDROID_SDK_ROOT 'build-tools/34.0.0/aapt.exe')
+  #     #     & (Join-Path $env:ANDROID_SDK_ROOT 'build-tools/34.0.0/aapt.exe') version
+  #     #   if: ${{ runner.os == 'Windows' }}
+
+  #     # - run: |
+  #     #     file $ANDROID_SDK_ROOT/build-tools/34.0.0/aapt
+  #     #     $ANDROID_SDK_ROOT/build-tools/34.0.0/aapt version
+  #     #   if: ${{ runner.os == 'Linux' }}
+
+  #     # - run: |
+  #     #     tree $ANDROID_SDK_ROOT
+
+  emulator:
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      # See https://github.blog/changelog/2023-02-23-hardware-accelerated-android-virtualization-on-actions-windows-and-linux-larger-hosted-runners/
+      - name: Enable KVM group perms
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
 
-      # - uses: ./.github/actions/dumpbin
-      #   if: ${{ runner.os == 'Windows' }}
+      # - name: Setup Gradle
+      #   uses: gradle/actions/setup-gradle@ed408507eac070d1f99cc633dbcf757c94c7933a # pin@v3
 
-      # - uses: actions/setup-java@v3
-      #   with:
-      #     distribution: 'temurin'
-      #     java-version: '21'
-
-      # - uses: android-actions/setup-android@07976c6290703d34c16d382cb36445f98bb43b1f # v3.2.0
-      #   with:
-      #     log-accepted-android-sdk-licenses: false
-      #     packages: "ndk;23.2.8568313"
-
-      - name: Install Java 17
-        uses: actions/setup-java@v4
+      - uses: reactivecircus/android-emulator-runner@1dcd0090116d15e7c562f8db72807de5e036a4ed # Tag: v2.34.0
         with:
-          distribution: ${{ runner.os == 'Windows' && runner.arch == 'ARM64' && 'microsoft' || 'temurin' }}
-          java-version: '17'
-
-      # - run: |
-      #     Get-Command java
-      #     java --version
-      #   shell: pwsh
-
-      # download https://dl.google.com/android/repository/commandlinetools-win-12266719_latest.zip
-      # extract it to temp
-      # - run: |
-      #     $tools = Join-Path $env:TEMP 'commandlinetools-win-12266719_latest'
-      #     New-Item -Path $tools -ItemType Directory -Force
-      #     $toolsZip = Join-Path $tools 'commandlinetools-win-12266719_latest.zip'
-      #     Invoke-WebRequest -Uri 'https://dl.google.com/android/repository/commandlinetools-win-12266719_latest.zip' -OutFile $toolsZip
-
-      #     unzip -l $toolsZip
-      #     Expand-Archive -Path $toolsZip -DestinationPath $tools -Force
-      #     & (Join-Path $tools 'cmdline-tools\bin\sdkmanager.bat') --list --sdk_root $tools
-      #   continue-on-error: true
-
-      # same for commandlinetools-win-13114758_latest.zip
-      # - run: |
-      #     $tools = Join-Path $env:TEMP 'commandlinetools-win-13114758_latest'
-      #     New-Item -Path $tools -ItemType Directory -Force
-      #     $toolsZip = Join-Path $tools 'commandlinetools-win-13114758_latest.zip'
-      #     Invoke-WebRequest -Uri 'https://dl.google.com/android/repository/commandlinetools-win-13114758_latest.zip' -OutFile $toolsZip
-
-      #     unzip -l $toolsZip
-      #     Expand-Archive -Path $toolsZip -DestinationPath $tools -Force
-      #     & (Join-Path $tools 'cmdline-tools\bin\sdkmanager.bat') --list --sdk_root $tools
-      #   continue-on-error: true
-
-      - name: Setup Android SDK
-        #uses: android-actions/setup-android@07976c6290703d34c16d382cb36445f98bb43b1f # v3.2.0
-        #uses: android-actions/setup-android@9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407 # v3.2.2
-        uses: android-actions/setup-android@v3
-        with:
-          packages: platform-tools build-tools;36.0.0
-          log-accepted-android-sdk-licenses: false
-          # cmdline-tools-version: 13114758
-        # env:
-        #   ANDROID_HOME: C:\Android\android-sdk
-        #   ANDROID_NDK: C:\Android\android-sdk\ndk\27.2.12479018
-        #   ANDROID_NDK_HOME: C:\Android\android-sdk\ndk\27.2.12479018
-        #   ANDROID_NDK_LATEST_HOME: C:\Android\android-sdk\ndk\27.2.12479018
-        #   ANDROID_NDK_ROOT: C:\Android\android-sdk\ndk\27.2.12479018
-        #   ANDROID_SDK_ROOT: C:\Android\android-sdk
-
-      - if: ${{ runner.os == 'Windows' && runner.arch == 'X64' }}
-        run: sdkmanager tools
-
-      # - run: sdkmanager "build-tools;34.0.0"
-
-      # - run: |
-      #     dumpbin /headers (Join-Path $env:ANDROID_SDK_ROOT 'build-tools/34.0.0/aapt.exe')
-      #     & (Join-Path $env:ANDROID_SDK_ROOT 'build-tools/34.0.0/aapt.exe') version
-      #   if: ${{ runner.os == 'Windows' }}
-
-      # - run: |
-      #     file $ANDROID_SDK_ROOT/build-tools/34.0.0/aapt
-      #     $ANDROID_SDK_ROOT/build-tools/34.0.0/aapt version
-      #   if: ${{ runner.os == 'Linux' }}
-
-      # - run: |
-      #     tree $ANDROID_SDK_ROOT
+          api-level: 36
+          target: google_apis
+          force-avd-creation: false
+          ram-size: 2048M
+          arch: x86_64
+          disk-size: 4096M
+          emulator-options: -no-snapshot-save -no-window -accel on -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: false
+          script: export
