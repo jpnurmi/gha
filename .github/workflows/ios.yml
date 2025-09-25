@@ -1,0 +1,13 @@
+name: iOS
+
+on:
+  push:
+    paths:
+      - '**/ios.yml'
+  workflow_dispatch:
+
+jobs:
+  simulator:
+    runs-on: macos-15
+    steps:
+      - run: xcrun simctl list devices
