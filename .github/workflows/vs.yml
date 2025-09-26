@@ -54,4 +54,6 @@ jobs:
           repository: getsentry/sentry-dotnet
           submodules: recursive
 
+      - run: dotnet workload restore
+
       - run: msbuild Sentry-CI-Build-Windows.slnf -t:Restore,Build -p:Configuration=Release --nologo -v:minimal -flp:logfile=msbuild.log -p:CopyLocalLockFileAssemblies=true -bl:msbuild.binlog
