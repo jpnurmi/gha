@@ -7,14 +7,13 @@ on:
   workflow_dispatch:
 
 jobs:
-  env:
-    name: VS
+  vswhere:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         include:
-          - os: windows-2019
+          # - os: windows-2019
           - os: windows-2022
           - os: windows-2025
 
@@ -26,3 +25,9 @@ jobs:
           # dir $vsPath
           # dir "$vsPath\MSBuild\Microsoft\VC\v170\Platforms"
           # dir -Recurse "$vsPath\MSBuild\Microsoft\VC"
+
+  vs2019:
+    runs-on: windows-2022
+    steps:
+      - run: |
+          choco install visualstudio2029buildtools
