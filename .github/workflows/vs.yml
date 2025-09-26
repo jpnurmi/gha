@@ -42,6 +42,6 @@ jobs:
       - run: dotnet new globaljson --sdk-version 5.0.408
       - run: dotnet --version
       - run: dotnet new console --name hello-sentry --output .
-      #- run: dotnet add package Sentry
+      - run: dotnet add package Sentry
       #- run: dotnet workload restore
-      - run: msbuild hello-sentry.csproj -t:Restore,Build -p:Configuration=Release -v:detailed
+      - run: msbuild hello-sentry.csproj -t:Restore,Build -p:Configuration=Release -v:normal
