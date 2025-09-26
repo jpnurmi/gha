@@ -30,14 +30,20 @@ jobs:
     runs-on: windows-2022
     steps:
       - run: |
+          msbuild -version
+
+      - run: |
           choco install visualstudio2019buildtools
 
       - run: |
           & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
 
-      # - uses: microsoft/setup-msbuild@v2
-      #   with:
-      #     vs-version: '16.11'
+      - uses: microsoft/setup-msbuild@v2
+        with:
+          vs-version: '16.11'
+
+      - run: |
+          msbuild -version
 
       # - uses: actions/setup-dotnet@v4
       #   with:
