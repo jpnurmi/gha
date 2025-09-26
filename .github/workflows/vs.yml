@@ -43,13 +43,15 @@ jobs:
           vs-version: '[16.0,17.0)'
       - run: msbuild -version
 
-      # - uses: actions/setup-dotnet@v4
-      #   with:
-      #     dotnet-version: |
-      #       8.0.x
-      #       9.0.304
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            9.0.304
 
-      # - uses: actions/checkout@v4
-      #   with:
-      #     repository: getsentry/sentry-dotnet
-      #     submodules: recursive
+      - uses: actions/checkout@v4
+        with:
+          repository: getsentry/sentry-dotnet
+          submodules: recursive
+
+      - run: msbuild Sentry-CI-Build-Windows.slnf -t:Restore,Build -p:Configuration=Release --nologo -v:minimal -flp:logfile=msbuild.log -p:CopyLocalLockFileAssemblies=true -bl:msbuild.binlog
