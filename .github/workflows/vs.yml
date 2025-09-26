@@ -30,4 +30,4 @@ jobs:
     runs-on: windows-2022
     steps:
       - run: |
-          choco install visualstudio2029buildtools
+          choco install visualstudio2019buildtools
