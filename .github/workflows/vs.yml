@@ -7,27 +7,45 @@ on:
   workflow_dispatch:
 
 jobs:
-  vswhere:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          # - os: windows-2019
-          - os: windows-2022
-          - os: windows-2025
+  # vswhere:
+  #   runs-on: ${{ matrix.os }}
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       include:
+  #         # - os: windows-2019
+  #         - os: windows-2022
+  #         - os: windows-2025
 
-    steps:
-      - run: |
-          & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
-          # $vsPath = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -property installationPath
-          # echo "VS installation path: $vsPath"
-          # dir $vsPath
-          # dir "$vsPath\MSBuild\Microsoft\VC\v170\Platforms"
-          # dir -Recurse "$vsPath\MSBuild\Microsoft\VC"
+  #   steps:
+  #     - run: |
+  #         & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+  #         # $vsPath = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -property installationPath
+  #         # echo "VS installation path: $vsPath"
+  #         # dir $vsPath
+  #         # dir "$vsPath\MSBuild\Microsoft\VC\v170\Platforms"
+  #         # dir -Recurse "$vsPath\MSBuild\Microsoft\VC"
 
   vs2019:
     runs-on: windows-2022
     steps:
       - run: |
           choco install visualstudio2019buildtools
+
+      - run: |
+          & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+
+      # - uses: microsoft/setup-msbuild@v2
+      #   with:
+      #     vs-version: '16.11'
+
+      # - uses: actions/setup-dotnet@v4
+      #   with:
+      #     dotnet-version: |
+      #       8.0.x
+      #       9.0.304
+
+      # - uses: actions/checkout@v4
+      #   with:
+      #     repository: getsentry/sentry-dotnet
+      #     submodules: recursive
