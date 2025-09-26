@@ -29,6 +29,9 @@ jobs:
   vs2019:
     runs-on: windows-2022
     steps:
+      - uses: microsoft/setup-msbuild@v2
+      - run: msbuild -version
+
       - run: |
           choco install visualstudio2019buildtools
 
@@ -37,10 +40,8 @@ jobs:
 
       - uses: microsoft/setup-msbuild@v2
         with:
-          vs-version: '16.11'
-
-      - run: |
-          msbuild -version
+          vs-version: '[16.0,17.0)'
+      - run: msbuild -version
 
       # - uses: actions/setup-dotnet@v4
       #   with:
