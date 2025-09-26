@@ -31,27 +31,15 @@ jobs:
     steps:
       - run: choco install visualstudio2019buildtools
 
-      - run: |
-          & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
-
       - uses: microsoft/setup-msbuild@v2
         with:
           vs-version: '[16.0,17.0)'
-      - run: msbuild -version
 
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 5.0.x
 
-      - run: dotnet workload restore
-
-      # - uses: actions/checkout@v4
-      #   with:
-      #     repository: getsentry/sentry-dotnet
-      #     submodules: recursive
-
-      #- run: msbuild Sentry-CI-Build-Windows.slnf -t:Restore,Build -p:Configuration=Release --nologo -v:minimal -flp:logfile=msbuild.log -p:CopyLocalLockFileAssemblies=true -bl:msbuild.binlog
-
       - run: dotnet new console --aot --name hello-sentry --output .
-      - run: dotnet add package Sentry --prerelease
+      - run: dotnet add package Sentry
+      - run: dotnet workload restore
       - run: msbuild hello-sentry.csproj -t:Restore,Build -p:Configuration=Release -v:detailed
