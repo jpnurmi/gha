@@ -30,9 +30,6 @@ jobs:
     runs-on: windows-2022
     steps:
       - run: |
-          msbuild -version
-
-      - run: |
           choco install visualstudio2019buildtools
 
       - run: |
