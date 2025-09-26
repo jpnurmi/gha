@@ -14,14 +14,15 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          - os: windows-2019
           - os: windows-2022
           - os: windows-2025
 
     steps:
       - run: |
           & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
-          $vsPath = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -property installationPath
-          echo "VS installation path: $vsPath"
-          dir $vsPath
-          dir "$vsPath\MSBuild\Microsoft\VC\v170\Platforms"
-          dir -Recurse "$vsPath\MSBuild\Microsoft\VC"
+          # $vsPath = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -property installationPath
+          # echo "VS installation path: $vsPath"
+          # dir $vsPath
+          # dir "$vsPath\MSBuild\Microsoft\VC\v170\Platforms"
+          # dir -Recurse "$vsPath\MSBuild\Microsoft\VC"
