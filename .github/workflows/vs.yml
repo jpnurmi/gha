@@ -44,4 +44,4 @@ jobs:
       - run: dotnet new console --name hello-sentry --output .
       - run: dotnet add package Sentry
       #- run: dotnet workload restore
-      - run: msbuild hello-sentry.csproj -t:Restore,Build -p:Configuration=Release -v:normal
+      - run: msbuild hello-sentry.csproj -t:Restore,Build -p:Configuration=Release -p:TreatWarningAsErrors=true -v:normal
