@@ -20,5 +20,8 @@ jobs:
           submodules: recursive
 
       - uses: github/codeql-action/init@v3
+        with:
+          languages: actions
+          queries: actions/unpinned-tag, actions/unversioned-immutable-action
 
       - uses: github/codeql-action/analyze@v3
