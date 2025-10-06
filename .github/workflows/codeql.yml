@@ -22,6 +22,6 @@ jobs:
       - uses: github/codeql-action/init@v3
         with:
           languages: actions
-          queries: security-extended
+          queries: ./.github/codeql
 
       - uses: github/codeql-action/analyze@v3
