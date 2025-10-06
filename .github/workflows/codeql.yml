@@ -19,6 +19,8 @@ jobs:
         with:
           submodules: recursive
 
+      - uses:  phwes/simple_hello_world@v1
+
       - uses: github/codeql-action/init@v3
         with:
           languages: actions
