@@ -22,12 +22,6 @@ jobs:
       - uses: github/codeql-action/init@v3
         with:
           languages: actions
-          config: |
-              query-filters:
-                  - include:
-                      id:
-                          - actions/unpinned-tag
-                          - actions/unversioned-immutable-action
-          queries: security-and-quality
+          queries: security-extended
 
       - uses: github/codeql-action/analyze@v3
