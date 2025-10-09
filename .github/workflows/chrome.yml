@@ -38,10 +38,7 @@ jobs:
       # - run: ${{ steps.setup-chrome.outputs.chromedriver-path }} --version
 
     - run: |
-        npm install --no-save --verbose puppeteer@24.23.0
-
-    - run: |
-        npm install --no-save --verbose chromedriver@141.0.1
+        npm install --no-save --verbose chromedriver@141.0.1 puppeteer@24.23.0
 
     - run: export
     - run: ls -la .
