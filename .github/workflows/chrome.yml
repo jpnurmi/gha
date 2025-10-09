@@ -16,6 +16,9 @@ jobs:
         include:
           - os: ubuntu-latest
           - os: windows-latest
+    defaults:
+      run:
+        shell: bash
 
     steps:
       - uses: browser-actions/setup-chrome@v2
@@ -24,9 +27,7 @@ jobs:
           chrome-version: 141
           install-chromedriver: true
 
-      - shell: bash
-        run: |
-          echo "chrome-version=${{ steps.setup-chrome.outputs.chrome-version }}"
-          echo "chrome-path=${{ steps.setup-chrome.outputs.chrome-path }}"
-          echo "chromedriver-version=${{ steps.setup-chrome.outputs.chromedriver-version }}"
-          echo "chromedriver-path=${{ steps.setup-chrome.outputs.chromedriver-path }}"
+      - run: echo "chrome-version=${{ steps.setup-chrome.outputs.chrome-version }}"
+      - run: echo "chrome-path=${{ steps.setup-chrome.outputs.chrome-path }}"
+      - run: echo "chromedriver-version=${{ steps.setup-chrome.outputs.chromedriver-version }}"
+      - run: echo "chromedriver-path=${{ steps.setup-chrome.outputs.chromedriver-path }}"
