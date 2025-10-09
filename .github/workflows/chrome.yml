@@ -40,8 +40,4 @@ jobs:
     - run: |
         npm install --no-save --verbose chromedriver@141.0.1 puppeteer@24.23.0
 
-    - run: export
-    - run: ls -la .
-    - run: ls -la ./node_modules/
-    - run: ls -la ./node_modules/puppeteer
-    - run: tree ./node_modules/puppeteer
+    - run: tree ~/.cache/puppeteer
