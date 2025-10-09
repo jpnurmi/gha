@@ -25,3 +25,6 @@ jobs:
           "%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property catalog_productLineVersion
           "%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationVersion
         shell: cmd
+
+      - run: |
+          where.exe wmic.exe
