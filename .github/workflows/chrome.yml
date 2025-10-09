@@ -44,5 +44,4 @@ jobs:
     - run: ls -la .
     - run: ls -la ./node_modules/
     - run: ls -la ./node_modules/puppeteer
-    - run: ls -la ./node_modules/puppeteer/.local-chromium
     - run: tree ./node_modules/puppeteer
