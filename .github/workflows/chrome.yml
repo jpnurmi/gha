@@ -21,18 +21,24 @@ jobs:
         shell: bash
 
     steps:
-      - run: /opt/google/chrome/chrome --version
+      # - run: /opt/google/chrome/chrome --version
 
-      - uses: browser-actions/setup-chrome@v2
-        id: setup-chrome
-        with:
-          chrome-version: 141
-          install-chromedriver: true
-          install-dependencies: true
+      # - uses: browser-actions/setup-chrome@v2
+      #   id: setup-chrome
+      #   with:
+      #     chrome-version: 141
+      #     install-chromedriver: true
+      #     install-dependencies: true
 
-      - run: echo "chrome-version=${{ steps.setup-chrome.outputs.chrome-version }}"
-      - run: echo "chrome-path=${{ steps.setup-chrome.outputs.chrome-path }}"
-      - run: echo "chromedriver-version=${{ steps.setup-chrome.outputs.chromedriver-version }}"
-      - run: echo "chromedriver-path=${{ steps.setup-chrome.outputs.chromedriver-path }}"
+      # - run: echo "chrome-version=${{ steps.setup-chrome.outputs.chrome-version }}"
+      # - run: echo "chrome-path=${{ steps.setup-chrome.outputs.chrome-path }}"
+      # - run: echo "chromedriver-version=${{ steps.setup-chrome.outputs.chromedriver-version }}"
+      # - run: echo "chromedriver-path=${{ steps.setup-chrome.outputs.chromedriver-path }}"
 
-      - run: ${{ steps.setup-chrome.outputs.chromedriver-path }} --version
+      # - run: ${{ steps.setup-chrome.outputs.chromedriver-path }} --version
+
+    - run: |
+        npm install --no-save --verbose chromedriver@141.0.1
+
+    - run: |
+        npm install --no-save --verbose puppeteer@24.23.0
