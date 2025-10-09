@@ -37,6 +37,12 @@ jobs:
 
       # - run: ${{ steps.setup-chrome.outputs.chromedriver-path }} --version
 
+    - run: ls -la $CHROME_BIN
+    - run: $CHROME_BIN --version
+
+    - run: ls -la $CHROMEWEBDRIVER
+    - run: $CHROMEWEBDRIVER --version
+
     - run: |
         npm install --no-save --verbose chromedriver@141.0.1 puppeteer@24.23.0
 
