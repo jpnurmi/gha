@@ -41,7 +41,7 @@ jobs:
     - run: $CHROME_BIN --version
 
     - run: ls -la $CHROMEWEBDRIVER
-    - run: $CHROMEWEBDRIVER --version
+    - run: $CHROMEWEBDRIVER/chromedriver --version
 
     - run: |
         npm install --no-save --verbose chromedriver@141.0.1 puppeteer@24.23.0
