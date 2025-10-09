@@ -31,3 +31,5 @@ jobs:
       - run: echo "chrome-path=${{ steps.setup-chrome.outputs.chrome-path }}"
       - run: echo "chromedriver-version=${{ steps.setup-chrome.outputs.chromedriver-version }}"
       - run: echo "chromedriver-path=${{ steps.setup-chrome.outputs.chromedriver-path }}"
+
+      - run: ${{ steps.setup-chrome.outputs.chromedriver-path }} --version
