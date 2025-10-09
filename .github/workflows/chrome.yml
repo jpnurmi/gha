@@ -21,6 +21,8 @@ jobs:
         shell: bash
 
     steps:
+      - run: /opt/google/chrome/chrome --version
+
       - uses: browser-actions/setup-chrome@v2
         id: setup-chrome
         with:
