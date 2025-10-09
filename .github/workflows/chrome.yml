@@ -42,3 +42,11 @@ jobs:
 
     - run: |
         npm install --no-save --verbose puppeteer@24.23.0
+
+    - run: export
+    - run: ls -la .
+    - run: ls -la ./node_modules/
+    - run: ls -la ./node_modules/.bin
+    - run: ls -la ./node_modules/chromedriver/
+    - run: ls -la ./node_modules/chromedriver/lib/
+    - run: ls -la ./node_modules/chromedriver/lib/chromedriver/
