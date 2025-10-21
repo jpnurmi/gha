@@ -18,6 +18,8 @@ jobs:
           - os: macos-14
           - os: macos-15
           - os: macos-latest
+          - os: macos-15-intel
+          - os: macos-26
 
     steps:
       - run: sysctl -n machdep.cpu.brand_string
