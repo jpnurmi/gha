@@ -111,6 +111,8 @@ jobs:
   emulator:
     runs-on: ubuntu-latest
     steps:
+      - run: sudo apt install -y qemu-system-arm
+
       # See https://github.blog/changelog/2023-02-23-hardware-accelerated-android-virtualization-on-actions-windows-and-linux-larger-hosted-runners/
       - name: Enable KVM group perms
         run: |
