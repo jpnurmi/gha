@@ -15,7 +15,6 @@ jobs:
       matrix:
         include:
           - os: macos-latest
-          - os: macos-13
           - os: macos-14
           - os: macos-15
           - os: macos-15-intel
@@ -28,4 +27,5 @@ jobs:
 
     steps:
       - run: sysctl -n machdep.cpu.brand_string
+      - run: sysctl -n hw.machine
       - run: xcodebuild -showsdks
