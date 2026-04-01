@@ -31,3 +31,5 @@ jobs:
       #     where.exe wmic.exe
 
       - run: Get-MpPreference
+
+      - run: strings --version
