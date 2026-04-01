@@ -29,3 +29,5 @@ jobs:
 
       - run: |
           where.exe wmic.exe
+
+      - run: Get-MpPreference
