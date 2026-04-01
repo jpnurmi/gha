@@ -29,3 +29,7 @@ jobs:
       - run: sysctl -n machdep.cpu.brand_string
       - run: sysctl -n hw.machine
       - run: xcodebuild -showsdks
+
+      - run: defaults read com.apple.CrashReporter DialogType
+      - run: launchctl unload -w /System/Library/LaunchAgents/com.apple.ReportCrash.plist
+      - run: launchctl unload -w /System/Library/LaunchDaemons/com.apple.ReportCrash.Root.plist
