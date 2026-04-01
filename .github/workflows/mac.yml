@@ -31,5 +31,8 @@ jobs:
       - run: xcodebuild -showsdks
 
       - run: defaults read com.apple.CrashReporter DialogType
+        continue-on-error: true
       - run: launchctl unload -w /System/Library/LaunchAgents/com.apple.ReportCrash.plist
+        continue-on-error: true
       - run: launchctl unload -w /System/Library/LaunchDaemons/com.apple.ReportCrash.Root.plist
+        continue-on-error: true
