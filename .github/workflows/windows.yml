@@ -33,3 +33,5 @@ jobs:
       - run: Get-MpPreference
 
       - run: strings --version
+
+      - run: Get-CimInstance Win32_OperatingSystem
