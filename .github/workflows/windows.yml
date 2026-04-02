@@ -34,4 +34,5 @@ jobs:
 
       - run: strings --version
 
-      - run: Get-CimInstance Win32_OperatingSystem
+      - run: |
+          Get-CimInstance Win32_OperatingSystem | Select TotalVisibleMemorySize, FreePhysicalMemory, TotalVirtualMemorySize
