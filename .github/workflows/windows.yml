@@ -15,12 +15,15 @@ jobs:
         include:
           - os: windows-latest
           - os: windows-2025
+          - os: windows-2025-vs2026
           - os: windows-2022
           - os: windows-11-arm
 
     steps:
       - run: where cmd.exe
         shell: cmd
+
+      - run: cmake --version
 
       - run: |
           "%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property catalog_productLineVersion
@@ -36,3 +39,4 @@ jobs:
 
       - run: |
           Get-CimInstance Win32_OperatingSystem | Select TotalVisibleMemorySize, FreePhysicalMemory, TotalVirtualMemorySize
+
