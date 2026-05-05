@@ -23,7 +23,7 @@ jobs:
           - os: windows-11-arm
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - run: ./pester.Tests.ps1
         shell: pwsh

@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           repository: getsentry/sentry-dotnet
           submodules: recursive
@@ -27,7 +27,7 @@ jobs:
           touch src/Sentry.Fake/Release/Sentry.Fake.5.11.0.nupkg
           touch src/Sentry.Fake/Release/Sentry.Fake.5.11.0.snunupkg
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           repository: getsentry/sentry-dotnet
           submodules: false

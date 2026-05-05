@@ -25,7 +25,7 @@ jobs:
             no-mobile: true
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - run: sleep 10s
         shell: bash
@@ -53,7 +53,7 @@ jobs:
           - os: windows-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: ./.github/actions/test
         with:
           duration: 10

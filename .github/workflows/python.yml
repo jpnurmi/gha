@@ -24,7 +24,7 @@ jobs:
           - host: windows-11-arm
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: ./.github/actions/dumpbin
         if: ${{ runner.os == 'Windows' }}
